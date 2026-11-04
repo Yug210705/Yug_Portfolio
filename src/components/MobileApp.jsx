@@ -183,7 +183,8 @@ export default function MobileApp({
                 <img
                   src={CASUAL}
                   alt="Yug casual"
-                  className="w-16 h-16 rounded-2xl object-cover border-2 border-white/20 shadow-xl shrink-0"
+                  className="w-16 h-16 rounded-2xl object-cover object-top border-2 border-white/20 shadow-xl shrink-0"
+                  style={{ objectPosition: "center 5%" }}
                 />
               </div>
 
