@@ -119,7 +119,7 @@ const KNOWLEDGE_RESPONSES = [
   {
     keywords: ["linqchain", "resilience", "resilience os", "supply chain", "control center", "sap cap", "hana", "xyflow"],
     answer:
-      "LinqChain (Resilience OS) is an enterprise supply chain command center that deterministically simulates systemic disruptions, predicts multi-tier bottlenecks, and computes optimal recovery paths before catastrophic supply failure occurs. Architecturally, it features a Next.js 14 interactive dashboard utilizing dynamic directed network graphs (@xyflow/react) and Recharts. The computational core runs on Python with FastAPI and SQLAlchemy, hosting a high-throughput deterministic simulation engine. A custom AI Adapter interfaces with enterprise LLMs under deterministic bounds — the LLM can only suggest strategies within pre-calculated feasible simulation states, ensuring hallucination-proof recommendations. Supply telemetry and multi-tier bills of materials are managed on an enterprise SAP Cloud Application Programming Model (CAP) tier backed by SAP HANA Cloud, with automated PDF disruption reporting via jsPDF. This project was a National Finalist at SAP HackFest 2026 with Team CodeHens.",
+      "LinqChain (Resilience OS) is an enterprise supply chain command center that deterministically simulates systemic disruptions, predicts multi-tier bottlenecks, and computes optimal recovery paths before catastrophic supply failure occurs. Architecturally, it features a Next.js 14 interactive dashboard utilizing dynamic directed network graphs (@xyflow/react) and Recharts. The computational core runs on Python with FastAPI and SQLAlchemy, hosting a high-throughput deterministic simulation engine. A custom AI Adapter interfaces with enterprise LLMs under deterministic bounds — the LLM can only suggest strategies within pre-calculated feasible simulation states, ensuring hallucination-proof recommendations. Supply telemetry and multi-tier bills of materials are managed on an enterprise SAP Cloud Application Programming Model (CAP) tier backed by SAP HANA Cloud, with automated PDF disruption reporting via jsPDF. This project was a National Finalist at SAP HackFest 2026 .",
     project: "resilience",
   },
   {
@@ -191,7 +191,7 @@ const KNOWLEDGE_RESPONSES = [
   {
     keywords: ["hackathon", "hackfest", "sap", "scpc", "awards", "achievements", "winner", "competition"],
     answer:
-      "Competitive hackathons have been pivotal in shaping my speed, grit, and team collaboration. I was a National Finalist at SAP HackFest 2026 with Team CodeHens for building LinqChain (Resilience OS), and a semifinalist at the SCPC National Hackathon. Hackathons have taught me how to navigate ambiguity, synthesize complex domains into clear system architectures, and ship working prototypes under high pressure.",
+      "Competitive hackathons have been pivotal in shaping my speed, grit, and team collaboration. I was a National Finalist at SAP HackFest 2026  for building LinqChain (Resilience OS), and a semifinalist at the SCPC National Hackathon. Hackathons have taught me how to navigate ambiguity, synthesize complex domains into clear system architectures, and ship working prototypes under high pressure.",
     project: null,
   },
   {
@@ -290,7 +290,7 @@ Key facts to draw upon when relevant:
 - Systems & DevOps: Jenkins, Docker, Kubernetes, SonarQube, Maven, AWS (CI/CD pipelines, container orchestration, quality gates).
 - Professional: Frontend Developer Intern at Mittal Alliance (built websites for international clients, 10+ REST APIs), Deccan AI (RLHF & SFT AI model training).
 - Leadership: Google Developer Groups on Campus Lead at Poornima University (scaled community from 1,100 to 2,300+ members, organized 15+ events).
-- Hackathons: National Finalist at SAP HackFest 2026 (₹75k prize with Team CodeHens for LinqChain/Resilience OS), semifinalist at SCPC National Hackathon, Top 5 at LNMHacks 8.0.
+- Hackathons: National Finalist at SAP HackFest 2026 for LinqChain (Resilience OS), semifinalist at SCPC National Hackathon, Top 5 at LNMHacks 8.0.
 - Key projects: LinqChain (Resilience OS - SAP supply chain control room), OBS (Oracle Before Signing on Monad blockchain), Campus OS (multi-tenant university system), Freight Cost Predictor (Volkswagen logistics ML), Project Pravah (SIH/Oil India telemetry IoT).
 Never break character. Do not use markdown fences, bullets, or asterisks; output conversational plain text that can be spoken directly.`,
           },
@@ -406,47 +406,37 @@ class InterviewSpeechManager {
     }
   }
 
-  initVoices() {
-    if (!this.synth) return;
+  findManlyVoice() {
+    if (!this.synth) return null;
     const voices = this.synth.getVoices();
-    if (!voices || voices.length === 0) return;
+    if (!voices || voices.length === 0) return null;
 
-    // Strict filter to exclude female voices across Windows, Edge, and Chrome
-    const isFemale = (v) => {
+    // Strict filter to exclude female voices across Windows, Edge, Android Chrome, and iOS
+    const isStrictlyFemale = (v) => {
       const name = (v.name || "").toLowerCase();
-      const lang = (v.lang || "").toLowerCase().replace(/_/g, "-");
+      const uri = (v.voiceURI || "").toLowerCase();
       return (
-        name.includes("female") ||
-        name.includes("zira") ||
-        name.includes("neerja") ||
-        name.includes("heera") ||
-        name.includes("swara") ||
-        name.includes("ananya") ||
-        name.includes("shruti") ||
-        name.includes("priya") ||
-        name.includes("veena") ||
-        name.includes("samantha") ||
-        name.includes("victoria") ||
-        name.includes("karen") ||
-        name.includes("susan") ||
-        name.includes("hazel") ||
-        name.includes("catherine") ||
-        name.includes("linda") ||
-        name.includes("jenny") ||
-        name.includes("aria") ||
-        name.includes("eva") ||
-        name.includes("google us english") || // Chrome's default US English is female
-        name.includes("google english (india)") || // Chrome's default Indian English is female
-        name.includes("google uk english female")
+        name.includes("female") || uri.includes("female") ||
+        name.includes("woman") || name.includes("girl") ||
+        name.includes("zira") || name.includes("neerja") || name.includes("heera") ||
+        name.includes("swara") || name.includes("ananya") || name.includes("shruti") ||
+        name.includes("priya") || name.includes("veena") || name.includes("samantha") ||
+        name.includes("victoria") || name.includes("karen") || name.includes("susan") ||
+        name.includes("hazel") || name.includes("catherine") || name.includes("linda") ||
+        name.includes("jenny") || name.includes("aria") || name.includes("eva") ||
+        name.includes("google us english") || name.includes("google english (india)") ||
+        name.includes("google uk english female") ||
+        uri.includes("en-in-x-end") || uri.includes("en-in-x-ene") || uri.includes("en-us-x-sfg")
       );
     };
 
     // Explicit male detection across Windows, Mac, Android, and iOS
-    const isMale = (v) => {
+    const isExplicitlyMale = (v) => {
       const name = (v.name || "").toLowerCase();
-      const lang = (v.lang || "").toLowerCase();
+      const uri = (v.voiceURI || "").toLowerCase();
       return (
-        name.includes("male") ||
+        name.includes("male") || uri.includes("male") ||
+        name.includes("uk english male") ||
         name.includes("prabhat") ||
         name.includes("ravi") ||
         name.includes("mohan") ||
@@ -463,8 +453,10 @@ class InterviewSpeechManager {
         name.includes("alex") ||
         name.includes("fred") ||
         name.includes("rishi") ||
-        name.includes("iom") ||
-        name.includes("cfl")
+        uri.includes("iom") ||
+        uri.includes("cfl") ||
+        uri.includes("iol") ||
+        uri.includes("rjs")
       );
     };
 
@@ -480,23 +472,32 @@ class InterviewSpeechManager {
       );
     };
 
-    // 1. Verified Indian male voice (e.g. Microsoft Prabhat, Ravi)
-    const indianMale = voices.find((v) => isIndian(v) && isMale(v) && !isFemale(v));
+    // 1. Prioritize verified Indian male voice (e.g. Microsoft Prabhat, Ravi, en-in-x-cfl#male)
+    const indianMale = voices.find((v) => isIndian(v) && isExplicitlyMale(v) && !isStrictlyFemale(v));
+    if (indianMale) return indianMale;
 
-    // 2. Verified English male voice (e.g. Microsoft David, Microsoft Mark, Guy, Google UK English Male)
+    // 2. Prioritize verified English male voice (e.g. Google UK English Male, Microsoft David, Guy)
     const englishMale = voices.find(
-      (v) => (v.lang || "").toLowerCase().startsWith("en") && isMale(v) && !isFemale(v)
+      (v) => (v.lang || "").toLowerCase().startsWith("en") && isExplicitlyMale(v) && !isStrictlyFemale(v)
     );
+    if (englishMale) return englishMale;
 
-    // 3. Any English voice that is strictly non-female
+    // 3. Any voice explicitly tagged male
+    const anyMale = voices.find((v) => isExplicitlyMale(v) && !isStrictlyFemale(v));
+    if (anyMale) return anyMale;
+
+    // 4. Any English voice that is strictly non-female
     const nonFemaleEnglish = voices.find(
-      (v) => (v.lang || "").toLowerCase().startsWith("en") && !isFemale(v)
+      (v) => (v.lang || "").toLowerCase().startsWith("en") && !isStrictlyFemale(v)
     );
+    if (nonFemaleEnglish) return nonFemaleEnglish;
 
-    // 4. Any strictly non-female voice
-    const anyNonFemale = voices.find((v) => !isFemale(v));
+    // 5. Fallback non-female voice
+    return voices.find((v) => !isStrictlyFemale(v)) || voices[0];
+  }
 
-    this.selectedVoice = indianMale || englishMale || nonFemaleEnglish || anyNonFemale || voices[0];
+  initVoices() {
+    this.selectedVoice = this.findManlyVoice();
   }
 
   clearTimers() {
@@ -606,15 +607,14 @@ class InterviewSpeechManager {
     try {
       this.synth.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      if (!this.selectedVoice) {
-        this.initVoices();
+      const manlyVoice = this.findManlyVoice();
+      if (manlyVoice) {
+        this.selectedVoice = manlyVoice;
+        utterance.voice = manlyVoice;
       }
-      if (this.selectedVoice) {
-        utterance.voice = this.selectedVoice;
-      }
-      utterance.rate = 1.0;
-      // Authentic manly voice with grounded baritone cadence (0.88)
-      utterance.pitch = 0.88;
+      utterance.rate = 0.96;
+      // Heavy, deep, undeniably manly baritone voice (0.72)
+      utterance.pitch = 0.72;
 
       utterance.onstart = () => {
         this.isSpeaking = true;

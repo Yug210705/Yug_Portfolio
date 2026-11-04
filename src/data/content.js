@@ -355,7 +355,7 @@ export const CHAPTERS = [
     era: "72 HOURS, REPEAT",
     lines: ["Seventy-two hours.", "No plan B."],
     paras: [
-      "LNMHacks taught me what my brain does at hour 51 of 72 — Top 5 among 100+ teams. And at SAP HackFest 26, my team CodeHens emerged as National Finalists with LinqChain (Resilience OS). Hackathons are where my whole story compresses into a weekend.",
+      "LNMHacks taught me what my brain does at hour 51 of 72 — Top 5 among 100+ teams. And at SAP HackFest 26, emerged as National Finalists with LinqChain (Resilience OS). Hackathons are where my whole story compresses into a weekend.",
     ],
     quote: {
       text: "72 hours is enough to become a slightly different person.",
@@ -364,7 +364,7 @@ export const CHAPTERS = [
     objects: ["lnmhacks"],
     photo: {
       src: "/assets/sap_hackfest_cheque.jpg",
-      caption: "SAP HACKFEST 26 · NATIONAL FINALIST · TEAM CODEHENS · CHANDIGARH UNIVERSITY",
+      caption: "SAP HACKFEST 2026 · NATIONAL FINALIST · CHANDIGARH UNIVERSITY",
     },
     error: false,
     effect: "Weekend systems demanded permanent systems →",
@@ -432,7 +432,7 @@ export const RECRUITER = {
     { org: "Deccan AI", what: "RLHF & SFT AI Trainer — judging model outputs up close" },
     { org: "Mittal Alliance", what: "Frontend Developer Intern — 10+ REST APIs, 3 international clients" },
     { org: "GDG On Campus Lead", what: "Official Organiser, Poornima University" },
-    { org: "SAP HackFest 26", what: "National Finalist — Team CodeHens demonstrated LinqChain (Resilience OS)" },
+    { org: "SAP HackFest 26", what: "National Finalist — Demonstrated LinqChain (Resilience OS)" },
     { org: "SCPC–Henkel", what: "National Semifinalist — finals at SP Jain, Mumbai" },
     { org: "LNMHacks 8.0", what: "Top 5 among 100+ teams" },
     { org: "OCI Certified", what: "Oracle Cloud Infrastructure Certified Developer Professional 2025" },
@@ -460,7 +460,7 @@ export const PROJECTS = [
     ],
     outcome: [
       "Live at resilience-os.vercel.app/command-center",
-      "National Finalist at SAP HackFest 2026 with Team CodeHens",
+      "National Finalist at SAP HackFest 2026",
       "Deterministic resilience verification across multi-tier supplier networks"
     ],
     broke: [
@@ -641,14 +641,14 @@ export const WISPR_TIMELINE = ["QBasic", "C++", "Java", "Python", "JavaScript", 
 export const FIELD_ARCHIVES = [
   {
     id: "sap-cheque",
-    title: "SAP HackFest 2026: National Finalist Team CodeHens",
+    title: "SAP HackFest 2026: National Finalist",
     date: "FEBRUARY 2026",
     badge: "SAP HackFest National Finalist",
     category: "Hackathons",
     image: "/assets/sap_hackfest_cheque.jpg",
     location: "Chandigarh University",
-    story: "Team CodeHens at SAP HackFest 2026 National Finals at Chandigarh University. We pitched and demonstrated LinqChain (Resilience OS) — our deterministic SAP CAP + HANA Cloud supply chain disruption simulation platform.",
-    stats: "National Finalist · Team CodeHens",
+    story: "At SAP HackFest 2026 National Finals at Chandigarh University. Pitched and demonstrated LinqChain (Resilience OS) — our deterministic SAP CAP + HANA Cloud supply chain disruption simulation platform.",
+    stats: "National Finalist · SAP HackFest",
   },
   {
     id: "tech-solution-challenge",

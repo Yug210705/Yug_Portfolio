@@ -255,14 +255,14 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, o
               <div className="p-5 sm:p-6 bg-[#0f111a] text-[#f1f5f9] transition-colors overflow-y-auto flex-1 min-h-0 border-t border-white/10">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                   {/* Photo Column with cyber-border and badge */}
-                  <div className="md:col-span-5 space-y-3 pt-1">
-                    <div className="relative group rounded-xl overflow-hidden border-2 border-emerald-500/40 shadow-xl bg-black/60 mt-1">
+                  <div className="md:col-span-5 space-y-3 pt-2 sm:pt-4">
+                    <div className="relative group rounded-xl overflow-hidden border-2 border-emerald-500/40 shadow-xl bg-black/60 mt-2 sm:mt-3">
                       <img
                         src={CASUAL}
                         alt="Yug Pathak"
                         loading="lazy"
                         className="w-full h-56 sm:h-64 object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                        style={{ objectPosition: "center 5%" }}
+                        style={{ objectPosition: "center 0%" }}
                       />
                       <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/80 backdrop-blur-md border border-emerald-400/50 text-[10px] font-mono text-emerald-400 font-bold flex items-center gap-1.5 shadow">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -305,7 +305,7 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, o
 
                     <p className="text-[13px] sm:text-[14px] leading-relaxed text-slate-300 font-sans">
                       Driven by curiosity, practical problem-solving, and building technology with measurable real-world impact.
-                      From winning <strong>National Finalist at SAP HackFest 2026</strong> for LinqChain (Resilience OS) to scaling Google Developer Groups on Campus to over <strong>2,300+ members</strong> across 15+ events, I focus on systems that run in production under pressure.
+                      From achieving <strong>National Finalist at SAP HackFest 2026</strong> for LinqChain (Resilience OS) to scaling Google Developer Groups on Campus to over <strong>2,300+ members</strong> across 15+ events, I focus on systems that run in production under pressure.
                     </p>
 
                     {/* Highlight Tags */}

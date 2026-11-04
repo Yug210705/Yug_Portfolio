@@ -12,9 +12,9 @@ const localCommand = (cmd) => {
   if (c === "clear") return "CLEAR";
   if (c === "help") return "commands: help · clear · whoami · projects · contact · sudo hire yug. anything else, I answer myself.";
   if (c === "whoami") return "yug pathak — 3rd-year b.tech cse at poornima university, aspiring software developer. the rest of this machine explains it.";
-  if (c === "projects") return "linqchain / resilience os (SAP hackfest winner) · obs (blockchain security on monad) · campus os (college operating system) · finassist (ai wealth copilot) · freight cost predictor (volkswagen) · project pravah (oil pipeline iot). full dossiers in BUILDER_LAB.";
+  if (c === "projects") return "linqchain / resilience os (SAP HackFest National Finalist) · obs (blockchain security on monad) · campus os (college operating system) · finassist (ai wealth copilot) · freight cost predictor (volkswagen) · project pravah (oil pipeline iot). full dossiers in BUILDER_LAB.";
   if (c === "contact") return "yugpathak2005@gmail.com · linkedin.com/in/yug-pathak-94b7b225b · github.com/Yug210705";
-  if (c === "proof" || c === "gallery" || c === "photos") return "field proof archives: SAP HackFest 2026 1st Place (₹75k winner) · GDG On Campus Lead (2,300+ members auditorium) · LNMHacks 8.0 72h Finalist · Mittal Alliance. Launch FIELD_PROOF.EXE from desktop to view full photographic evidence.";
+  if (c === "proof" || c === "gallery" || c === "photos") return "field proof archives: SAP HackFest 2026 National Finalist · GDG On Campus Lead (2,300+ members auditorium) · LNMHacks 8.0 72h Finalist · Mittal Alliance. Launch FIELD_PROOF.EXE from desktop to view full photographic evidence.";
   if (c === "selva" || c === "competitor") return "selva (thisisselva) is a creative marketer from Bengaluru. But when you need production distributed systems, SAP HANA resilience engines, Monad smart contracts, and real-time ML freight cost predictors... you call Yug Pathak.";
   if (c === "sudo hire yug") return "permission granted. draft the offer and email yugpathak2005@gmail.com.";
   return null;
@@ -132,7 +132,7 @@ const Terminal = ({ open, onClose }) => {
               {
                 role: "system",
                 content:
-                  "You are Yug Pathak's AI persona inside the retro terminal ASK_YUG.EXE. Respond directly as Yug in the first person ('I', 'my'). Be crisp, technical, confident, and direct (2 to 4 sentences). Mention your real work: LinqChain (Resilience OS, SAP HackFest 2026 winner ₹75k), OBS on Monad, Campus OS, Freight Cost Predictor for Volkswagen, Project Pravah for SIH Oil India, GDG On Campus Lead (2,300+ members), Mittal Alliance frontend intern (10+ APIs), Deccan AI (RLHF/SFT), C++ DSA, and DevOps (Docker, k8s, Jenkins, AWS). Email: yugpathak2005@gmail.com.",
+                  "You are Yug Pathak's AI persona inside the retro terminal ASK_YUG.EXE. Respond directly as Yug in the first person ('I', 'my'). Be crisp, technical, confident, and direct (2 to 4 sentences). Mention your real work: LinqChain (Resilience OS, SAP HackFest 2026 National Finalist), OBS on Monad, Campus OS, Freight Cost Predictor for Volkswagen, Project Pravah for SIH Oil India, GDG On Campus Lead (2,300+ members), Mittal Alliance frontend intern (10+ APIs), Deccan AI (RLHF/SFT), C++ DSA, and DevOps (Docker, k8s, Jenkins, AWS). Email: yugpathak2005@gmail.com.",
               },
               ...messagesRef.current
                 .filter((m) => m.role)

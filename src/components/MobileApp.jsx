@@ -31,8 +31,8 @@ import {
   HelpCircle,
   Copy,
   Check,
-  Clock,
-  Terminal,
+  Share2,
+  Filter,
 } from "lucide-react";
 import { RECRUITER, PROJECTS, FIELD_ARCHIVES, LINKS, CHAPTERS } from "@/data/content";
 
@@ -46,9 +46,12 @@ export default function MobileApp({
 }) {
   const [activeTab, setActiveTab] = useState("home");
   const [activeCategory, setActiveCategory] = useState("ALL");
+  const [storyEraFilter, setStoryEraFilter] = useState("ALL");
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [expandedProject, setExpandedProject] = useState("resilience");
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [quickQuestion, setQuickQuestion] = useState("");
   const [currentTime, setCurrentTime] = useState("");
 
   useEffect(() => {
@@ -71,20 +74,44 @@ export default function MobileApp({
     }
   };
 
+  const sharePortfolio = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2200);
+    }
+  };
+
+  const submitQuickQuestion = (e) => {
+    e.preventDefault();
+    if (quickQuestion.trim()) {
+      onOpenTerminal();
+    }
+  };
+
   const CATEGORIES = ["ALL", "Hackathons", "Leadership", "Conferences", "Work", "AI & Research"];
   const filteredArchives =
     activeCategory === "ALL"
       ? FIELD_ARCHIVES
       : FIELD_ARCHIVES.filter((item) => item.category === activeCategory);
 
+  const filteredChapters = CHAPTERS.filter((ch) => {
+    if (storyEraFilter === "ALL") return true;
+    if (storyEraFilter === "Class 6-10") return ch.id === "ch00" || ch.id === "ch01";
+    if (storyEraFilter === "JEE Pivot") return ch.id === "ch02" || ch.id === "ch03";
+    if (storyEraFilter === "College & GDG") return ch.id === "ch04" || ch.id === "ch05" || ch.id === "ch06" || ch.id === "ch07";
+    if (storyEraFilter === "3rd Year Systems") return ch.id === "ch08" || ch.id === "ch09";
+    return true;
+  });
+
   return (
-    <div className="fixed inset-0 bg-[#07090e] text-[#f1f5f9] flex flex-col font-sans select-none overflow-hidden z-50">
+    <div className="fixed inset-0 bg-[#07090e] text-[#f1f5f9] flex flex-col font-sans select-none overflow-hidden z-50 max-w-full">
       {/* Background Ambient Glow Orbs */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[340px] h-[340px] bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-sky-500/15 rounded-full blur-[90px] pointer-events-none" />
       <div className="absolute bottom-20 right-0 w-[240px] h-[240px] bg-sky-500/10 rounded-full blur-[80px] pointer-events-none" />
 
       {/* Top Phone Status Bar */}
-      <div className="h-10 px-5 flex items-center justify-between text-[11px] font-semibold text-white/70 shrink-0 border-b border-white/5 bg-[#0a0d14]/90 backdrop-blur-md z-20">
+      <div className="h-10 px-4 sm:px-5 flex items-center justify-between text-[11px] font-semibold text-white/70 shrink-0 border-b border-white/5 bg-[#0a0d14]/90 backdrop-blur-md z-20">
         <span className="font-mono">{currentTime || "12:10 AM"}</span>
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-emerald-400 font-mono tracking-wider flex items-center gap-1 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
@@ -98,10 +125,10 @@ export default function MobileApp({
         </div>
       </div>
 
-      {/* App Header Bar */}
-      <header className="px-4 py-2.5 flex items-center justify-between bg-[#0e121c]/95 border-b border-white/10 shrink-0 z-20 backdrop-blur-xl">
-        <div className="flex items-center gap-2.5">
-          <div className="relative">
+      {/* App Header Bar with Share + Desktop Switcher */}
+      <header className="px-3.5 py-2.5 flex items-center justify-between bg-[#0e121c]/95 border-b border-white/10 shrink-0 z-20 backdrop-blur-xl">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="relative shrink-0">
             <img
               src={HEADSHOT}
               alt="Yug Pathak"
@@ -109,47 +136,71 @@ export default function MobileApp({
             />
             <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#0e121c]" />
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-sm text-white tracking-tight">Yug Pathak</span>
-              <CheckCircle2 size={14} className="text-sky-400 fill-sky-400/20" />
+              <span className="font-bold text-sm text-white tracking-tight truncate">Yug Pathak</span>
+              <CheckCircle2 size={14} className="text-sky-400 fill-sky-400/20 shrink-0" />
             </div>
-            <p className="text-[11px] text-emerald-400/90 font-mono font-medium leading-none mt-0.5">
+            <p className="text-[11px] text-emerald-400/90 font-mono font-medium leading-none mt-0.5 truncate">
               SWE & AI Builder · CSE '26
             </p>
           </div>
         </div>
 
-        {/* Switch to Desktop OS Pill */}
-        <button
-          onClick={onSwitchDesktop}
-          className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500/20 to-indigo-500/20 hover:from-sky-500/30 hover:to-indigo-500/30 border border-sky-400/40 text-[11px] font-semibold text-sky-200 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow"
-          title="Switch to Retro Desktop OS"
-        >
-          <Monitor size={13} className="text-sky-300" />
-          <span>Desktop OS</span>
-        </button>
+        {/* Right Header Buttons */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={sharePortfolio}
+            className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/80 transition-colors cursor-pointer active:scale-95"
+            title="Share portfolio link"
+          >
+            {copiedLink ? <Check size={14} className="text-emerald-400" /> : <Share2 size={14} />}
+          </button>
+          <button
+            onClick={onSwitchDesktop}
+            className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500/20 to-indigo-500/20 hover:from-sky-500/30 hover:to-indigo-500/30 border border-sky-400/40 text-[11px] font-semibold text-sky-200 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow"
+            title="Switch to Retro Desktop OS"
+          >
+            <Monitor size={13} className="text-sky-300" />
+            <span className="hidden xs:inline">Desktop</span>
+          </button>
+        </div>
       </header>
 
+      {/* Share Toast Notification */}
+      <AnimatePresence>
+        {copiedLink && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute top-12 left-1/2 -translate-x-1/2 z-50 px-3 py-1.5 rounded-full bg-emerald-600 text-white font-mono text-xs font-bold shadow-2xl flex items-center gap-1.5 border border-white/30 backdrop-blur-md"
+          >
+            <Check size={13} />
+            <span>Portfolio URL Copied!</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Ticker / Live Achievement Marquee */}
-      <div className="h-7 bg-emerald-950/50 border-b border-emerald-500/20 flex items-center overflow-hidden shrink-0 z-10 px-2">
+      <div className="h-7 bg-emerald-950/50 border-b border-emerald-500/20 flex items-center overflow-hidden shrink-0 z-10 px-2 pointer-events-none">
         <motion.div
-          animate={{ x: [0, -1000] }}
-          transition={{ repeat: Infinity, duration: 24, ease: "linear" }}
+          animate={{ x: [0, -1100] }}
+          transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
           className="whitespace-nowrap flex items-center gap-6 text-[10px] font-mono text-emerald-300 font-medium"
         >
-          <span>🏆 National Finalist: SAP HackFest 2026 (Team CodeHens)</span>
+          <span>🏆 National Finalist: SAP HackFest 2026</span>
           <span>✦ Google Developer Groups on Campus Lead (1,100 → 2,300+ Members)</span>
-          <span>⚡ 8.88 CGPA · 3rd-Year B.Tech CSE (Poornima University)</span>
+          <span>⚡ 8.88 CGPA · 3rd-Year B.Tech CSE (Poornima University, Jaipur)</span>
           <span>🚀 LinqChain (Resilience OS) Enterprise Supply Chain Simulation</span>
-          <span>🔥 Frontend Intern @ Mittal Alliance · 10+ Production APIs</span>
+          <span>🔥 Frontend Developer Intern @ Mittal Alliance · 10+ Production APIs</span>
           <span>💡 Core Language: C++ & DSA Foundations</span>
         </motion.div>
       </div>
 
-      {/* Main Scrollable View Area with NO SCROLLER (Swipe Only) */}
+      {/* Main Scrollable View Area with NO SCROLLER (Smooth Swipe Only) */}
       <main
-        className="flex-1 min-h-0 overflow-y-auto no-scrollbar touch-pan-y px-4 py-4 pb-24 space-y-4 z-10"
+        className="flex-1 min-h-0 overflow-y-auto no-scrollbar touch-pan-y px-3.5 sm:px-4 py-4 pb-24 space-y-4 z-10 max-w-full overflow-x-hidden"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {/* ============================================================== */}
@@ -161,19 +212,19 @@ export default function MobileApp({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="space-y-4"
+            className="space-y-4 max-w-full"
           >
             {/* Holographic Hero Card */}
             <div className="relative rounded-2xl bg-gradient-to-b from-[#151a29]/90 to-[#0e111a]/95 border border-emerald-500/30 p-4 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
               <div className="absolute top-0 right-0 w-44 h-44 bg-gradient-to-br from-emerald-500/20 to-teal-500/0 rounded-full blur-2xl pointer-events-none" />
 
               <div className="flex items-start justify-between gap-3">
-                <div className="space-y-1">
+                <div className="space-y-1 min-w-0">
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 border border-emerald-400/30 text-emerald-300">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     OPEN TO SDE ROLES & INTERNSHIPS
                   </span>
-                  <h1 className="text-2xl font-black text-white tracking-tight pt-1">
+                  <h1 className="text-2xl font-black text-white tracking-tight pt-1 truncate">
                     Yug Pathak
                   </h1>
                   <p className="text-xs text-slate-300 leading-snug">
@@ -270,19 +321,19 @@ export default function MobileApp({
               onClick={() => setActiveTab("story")}
               className="p-3.5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-[#151929] to-indigo-950/40 border border-purple-500/30 flex items-center justify-between cursor-pointer active:scale-98 transition-all shadow"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0">
                 <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center shrink-0">
                   <BookOpen size={18} />
                 </div>
-                <div>
-                  <div className="font-bold text-xs text-white">The Journey: Class 6th → 3rd Year</div>
-                  <div className="text-[11px] text-slate-300 mt-0.5">MS Paint, QBasic, JEE pivot, GDG Lead & SAP Finals</div>
+                <div className="min-w-0">
+                  <div className="font-bold text-xs text-white truncate">The Journey: Class 6th → 3rd Year</div>
+                  <div className="text-[11px] text-slate-300 mt-0.5 truncate">MS Paint, QBasic, JEE pivot, GDG Lead & SAP Finals</div>
                 </div>
               </div>
-              <span className="text-xs font-mono font-bold text-purple-400 shrink-0">READ →</span>
+              <span className="text-xs font-mono font-bold text-purple-400 shrink-0 ml-2">READ →</span>
             </div>
 
-            {/* Featured System Hero Card: LinqChain (Resilience OS) - NO BADGE OVERLAP */}
+            {/* Featured System Hero Card: LinqChain (Resilience OS) */}
             <div className="p-4 rounded-2xl bg-gradient-to-br from-[#13192b] to-[#0c0f18] border-2 border-emerald-500/40 shadow-xl space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                 <span className="self-start px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
@@ -381,25 +432,43 @@ export default function MobileApp({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="space-y-4"
+            className="space-y-4 max-w-full"
           >
+            {/* Story Header */}
             <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-950/60 to-indigo-950/60 border border-purple-500/30">
               <span className="text-[10px] font-mono text-purple-300 uppercase tracking-widest font-bold">
                 CHRONOLOGICAL MEMORY ARCHIVE
               </span>
               <h2 className="text-xl font-black text-white mt-0.5">Class 6th → 3rd Year B.Tech</h2>
-              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-300 mt-1 leading-relaxed font-sans">
                 Eleven interconnected chapters. Every breakthrough, pivot, failure, and hackathon stage that turned a curious kid into an engineer.
               </p>
             </div>
 
+            {/* Era Filter Chips */}
+            <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
+              {["ALL", "Class 6-10", "JEE Pivot", "College & GDG", "3rd Year Systems"].map((era) => (
+                <button
+                  key={era}
+                  onClick={() => setStoryEraFilter(era)}
+                  className={`px-3 py-1 rounded-full text-xs font-mono font-semibold shrink-0 transition-all cursor-pointer ${
+                    storyEraFilter === era
+                      ? "bg-purple-600 text-white font-bold shadow-md shadow-purple-900/40"
+                      : "bg-white/10 text-white/70 hover:bg-white/15"
+                  }`}
+                >
+                  {era}
+                </button>
+              ))}
+            </div>
+
             {/* Chapters Timeline List */}
             <div className="space-y-4 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-gradient-to-b before:from-purple-500/60 before:via-emerald-500/40 before:to-sky-500/60">
-              {CHAPTERS.map((ch, idx) => (
+              {filteredChapters.map((ch, idx) => (
                 <div key={ch.id} className="relative pl-9 space-y-2">
                   {/* Timeline Node Dot */}
                   <div className="absolute left-1.5 top-2 w-4 h-4 rounded-full bg-[#0a0d14] border-2 border-purple-400 flex items-center justify-center text-[8px] font-mono text-purple-300 font-bold">
-                    {idx + 1}
+                    {ch.num}
                   </div>
 
                   {/* Chapter Card */}
@@ -468,7 +537,7 @@ export default function MobileApp({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="space-y-3"
+            className="space-y-3 max-w-full"
           >
             <div className="flex items-center justify-between pb-1">
               <div>
@@ -606,7 +675,7 @@ export default function MobileApp({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="space-y-3.5"
+            className="space-y-3.5 max-w-full"
           >
             <div>
               <h2 className="text-lg font-black text-white">Spotted in the Wild</h2>
@@ -680,7 +749,7 @@ export default function MobileApp({
         )}
 
         {/* ============================================================== */}
-        {/* TAB 5: INTERVIEW (Manly Voice 3D Virtual Technical Interview) */}
+        {/* TAB 5: INTERVIEW (Manly Baritone 3D Virtual Technical Interview) */}
         {/* ============================================================== */}
         {activeTab === "interview" && (
           <motion.div
@@ -688,7 +757,7 @@ export default function MobileApp({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="space-y-4 text-center py-4"
+            className="space-y-4 text-center py-4 max-w-full"
           >
             <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5 shadow-2xl shadow-emerald-500/30">
               <div className="w-full h-full rounded-[22px] bg-[#0c0f18] flex items-center justify-center">
@@ -698,7 +767,7 @@ export default function MobileApp({
 
             <div>
               <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-2">
-                MULTIMODAL AI AGENT · BARITONE CADENCE
+                MULTIMODAL AI AGENT · DEEP BARITONE VOICE
               </span>
               <h2 className="text-2xl font-black text-white">Live Virtual Interview</h2>
               <p className="text-xs text-slate-300 max-w-xs mx-auto mt-1 leading-relaxed">

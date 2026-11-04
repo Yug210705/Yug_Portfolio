@@ -33,7 +33,7 @@ const GUIDE_STEPS = [
     subtitle: "WINDOWS XP, 7, 8, 10, 11 & UBUNTU",
     icon: Award,
     content:
-      "Switch themes in the Start Menu or Control Panel. Launch FIELD_PROOF.EXE to view verified photos from SAP HackFest (₹75k winner), GDG stages, and client letters.",
+      "Switch themes in the Start Menu or Control Panel. Launch FIELD_PROOF.EXE to view verified photos from SAP HackFest (National Finalist), GDG stages, and client letters.",
     highlight: "Everything here is backed by authentic production proof.",
   },
 ];

@@ -18,7 +18,7 @@ const FLOATING_ARTIFACTS = [
   { text: "ARDUINO.SYS [CARDBOARD]", top: "54%", left: "3%", speed: -75 },
   { text: "LNM_HACKS_72H", top: "66%", right: "6%", speed: 85 },
   { text: "AWS_EC2_BILL: ₹3,000", top: "76%", left: "5%", speed: -65 },
-  { text: "SAP_HACKFEST_WINNER", top: "86%", right: "5%", speed: 75 },
+  { text: "SAP_HACKFEST_FINALIST", top: "86%", right: "5%", speed: 75 },
 ];
 
 const FloatingStoryBackground = () => {
