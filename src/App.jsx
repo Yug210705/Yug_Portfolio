@@ -13,6 +13,7 @@ import VoiceLayer from "@/components/VoiceLayer";
 import Terminal from "@/components/Terminal";
 import SettingsWindow from "@/components/SettingsWindow";
 import InterviewModal from "@/components/InterviewModal";
+import MobileApp from "@/components/MobileApp";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { OSSwitchTransition } from "@/components/OSSwitchTransition";
 
@@ -26,12 +27,27 @@ function AppInner() {
   const [phase, setPhase] = useState(() =>
     sessionStorage.getItem("yug_booted") ? hashToPhase() : "boot"
   );
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+  const [forceDesktop, setForceDesktop] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [interviewOpen, setInterviewOpen] = useState(false);
   const [builderProject, setBuilderProject] = useState(null);
   const lenisRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const goMode = useCallback((mode) => {
     setBuilderProject(null);
@@ -88,46 +104,72 @@ function AppInner() {
       <ErrorBoundary>
         <OSSwitchTransition />
 
-        {phase === "boot" && (
-          <Boot
-            onDone={() => {
-              if (window.location.hash) window.location.hash = "";
-              setPhase("desktop");
-            }}
-          />
-        )}
-
-        {phase !== "boot" && (
+        {isMobile && !forceDesktop ? (
           <>
-            {phase === "desktop" && (
-              <Desktop
-                goMode={goMode}
-                restartBoot={restartBoot}
-                onAskYug={() => setTerminalOpen(true)}
-                openSettings={() => setSettingsOpen(true)}
-                openInterview={() => setInterviewOpen(true)}
+            <MobileApp
+              onOpenInterview={() => setInterviewOpen(true)}
+              onOpenTerminal={() => setTerminalOpen(true)}
+              onSwitchDesktop={() => {
+                sessionStorage.setItem("yug_booted", "1");
+                setForceDesktop(true);
+              }}
+            />
+            <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} />
+            <InterviewModal open={interviewOpen} onClose={() => setInterviewOpen(false)} />
+          </>
+        ) : (
+          <>
+            {isMobile && forceDesktop && (
+              <button
+                onClick={() => setForceDesktop(false)}
+                className="fixed top-2 right-2 z-[999] px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-sans text-xs font-semibold shadow-2xl flex items-center gap-1.5 border border-white/20 cursor-pointer backdrop-blur-md"
+              >
+                <span>📱 Switch to Mobile App</span>
+              </button>
+            )}
+
+            {phase === "boot" && (
+              <Boot
+                onDone={() => {
+                  if (window.location.hash) window.location.hash = "";
+                  setPhase("desktop");
+                }}
               />
             )}
-            {phase === "story" && <StoryMode onOpenVoice={() => setVoiceOpen(true)} />}
-            {phase === "recruiter" && <RecruiterMode goMode={goMode} goBuilder={goBuilder} />}
-            {phase === "builder" && <BuilderMode goMode={goMode} initialProject={builderProject} />}
 
-            <Taskbar
-              phase={phase}
-              goMode={goMode}
-              openChooser={goMode.bind(null, "desktop")}
-              restartBoot={restartBoot}
-              voiceOpen={voiceOpen}
-              setVoiceOpen={setVoiceOpen}
-              askYug={() => setTerminalOpen(true)}
-              openSettings={() => setSettingsOpen(true)}
-              openInterview={() => setInterviewOpen(true)}
-              interviewOpen={interviewOpen}
-            />
-            <VoiceLayer open={voiceOpen} setOpen={setVoiceOpen} />
-            <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} />
-            <SettingsWindow open={settingsOpen} onClose={() => setSettingsOpen(false)} />
-            <InterviewModal open={interviewOpen} onClose={() => setInterviewOpen(false)} />
+            {phase !== "boot" && (
+              <>
+                {phase === "desktop" && (
+                  <Desktop
+                    goMode={goMode}
+                    restartBoot={restartBoot}
+                    onAskYug={() => setTerminalOpen(true)}
+                    openSettings={() => setSettingsOpen(true)}
+                    openInterview={() => setInterviewOpen(true)}
+                  />
+                )}
+                {phase === "story" && <StoryMode onOpenVoice={() => setVoiceOpen(true)} />}
+                {phase === "recruiter" && <RecruiterMode goMode={goMode} goBuilder={goBuilder} />}
+                {phase === "builder" && <BuilderMode goMode={goMode} initialProject={builderProject} />}
+
+                <Taskbar
+                  phase={phase}
+                  goMode={goMode}
+                  openChooser={goMode.bind(null, "desktop")}
+                  restartBoot={restartBoot}
+                  voiceOpen={voiceOpen}
+                  setVoiceOpen={setVoiceOpen}
+                  askYug={() => setTerminalOpen(true)}
+                  openSettings={() => setSettingsOpen(true)}
+                  openInterview={() => setInterviewOpen(true)}
+                  interviewOpen={interviewOpen}
+                />
+                <VoiceLayer open={voiceOpen} setOpen={setVoiceOpen} />
+                <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} />
+                <SettingsWindow open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+                <InterviewModal open={interviewOpen} onClose={() => setInterviewOpen(false)} />
+              </>
+            )}
           </>
         )}
       </ErrorBoundary>

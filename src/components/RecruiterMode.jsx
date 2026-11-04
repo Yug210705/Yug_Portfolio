@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Github, Linkedin, Mail, FileDown, BookOpen } from "lucide-react";
+import { FileText, Github, Linkedin, Mail, FileDown, BookOpen, Camera } from "lucide-react";
 import { LINKS, RECRUITER, FIELD_ARCHIVES } from "@/data/content";
 import { PROJECTS } from "@/data/content";
 import { BevelBtn, Win98Window } from "./Win98";
+import FieldGalleryModal from "./FieldGalleryModal";
 
 const HEADSHOT = "/assets/headshot.png";
 
