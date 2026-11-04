@@ -183,18 +183,24 @@ export default function MobileApp({
       </AnimatePresence>
 
       {/* Ticker / Live Achievement Marquee */}
-      <div className="h-7 bg-emerald-950/50 border-b border-emerald-500/20 flex items-center overflow-hidden shrink-0 z-10 px-2 pointer-events-none">
+      <div
+        className="h-8 bg-[#071310] border-b border-emerald-500/25 flex items-center overflow-hidden shrink-0 z-10 px-3 pointer-events-none"
+        style={{
+          maskImage: "linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent)",
+        }}
+      >
         <motion.div
           animate={{ x: [0, -1100] }}
-          transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
-          className="whitespace-nowrap flex items-center gap-6 text-[10px] font-mono text-emerald-300 font-medium"
+          transition={{ repeat: Infinity, duration: 24, ease: "linear" }}
+          className="whitespace-nowrap flex items-center gap-7 text-[11px] font-mono text-emerald-300 font-medium leading-none"
         >
-          <span>🏆 National Finalist: SAP HackFest 2026</span>
-          <span>✦ Google Developer Groups on Campus Lead (1,100 → 2,300+ Members)</span>
-          <span>⚡ 8.88 CGPA · 3rd-Year B.Tech CSE (Poornima University, Jaipur)</span>
-          <span>🚀 LinqChain (Resilience OS) Enterprise Supply Chain Simulation</span>
-          <span>🔥 Frontend Developer Intern @ Mittal Alliance · 10+ Production APIs</span>
-          <span>💡 Core Language: C++ & DSA Foundations</span>
+          <span className="flex items-center gap-1.5"><span className="text-amber-400">🏆</span> National Finalist: SAP HackFest 2026</span>
+          <span className="flex items-center gap-1.5"><span className="text-emerald-400">✦</span> GDG On Campus Lead (1,100 → 2,300+ Members)</span>
+          <span className="flex items-center gap-1.5"><span className="text-sky-400">⚡</span> 8.88 CGPA · 3rd-Year B.Tech CSE (Poornima Univ)</span>
+          <span className="flex items-center gap-1.5"><span className="text-teal-400">🚀</span> LinqChain (Resilience OS) SAP CAP + HANA Cloud</span>
+          <span className="flex items-center gap-1.5"><span className="text-orange-400">🔥</span> Frontend Intern @ Mittal Alliance · 10+ APIs</span>
+          <span className="flex items-center gap-1.5"><span className="text-indigo-400">💡</span> Core Engineering: C++ & DSA Foundations</span>
         </motion.div>
       </div>
 
@@ -396,25 +402,32 @@ export default function MobileApp({
                   View All ({FIELD_ARCHIVES.length}) →
                 </button>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2.5">
                 {FIELD_ARCHIVES.slice(0, 2).map((item) => (
                   <div
                     key={item.id}
                     onClick={() => setSelectedPhoto(item)}
-                    className="group relative rounded-xl overflow-hidden bg-[#141824] border border-white/10 cursor-pointer shadow-md"
+                    className="group relative rounded-xl overflow-hidden bg-[#131622] border border-white/10 cursor-pointer shadow-lg hover:border-emerald-500/40 transition-all flex flex-col justify-between"
                   >
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      loading="lazy"
-                      className="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-md text-[9px] font-mono text-emerald-400 font-bold border border-emerald-400/40">
-                      {item.badge}
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        loading="lazy"
+                        className="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <span className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md text-[8.5px] font-mono text-emerald-300 font-semibold border border-emerald-400/30 shadow truncate max-w-[90%]">
+                        {item.badge}
+                      </span>
                     </div>
-                    <div className="p-2 bg-[#0d101a]">
-                      <div className="font-bold text-[11px] text-white truncate">{item.title}</div>
-                      <div className="text-[10px] text-slate-400 truncate mt-0.5">{item.location}</div>
+                    <div className="p-2.5 bg-[#0b0e18] flex-1 flex flex-col justify-between">
+                      <div className="font-bold text-xs text-white line-clamp-2 leading-tight min-h-[30px]">
+                        {item.title}
+                      </div>
+                      <div className="text-[10px] text-slate-400 truncate mt-1 flex items-center gap-1 font-mono">
+                        <MapPin size={10} className="shrink-0 text-slate-500" />
+                        <span>{item.location}</span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -799,7 +812,7 @@ export default function MobileApp({
       </main>
 
       {/* Floating Bottom Navigation Bar (Home, Story, Projects, Proof, Interview) */}
-      <nav className="h-16 px-2 bg-[#0c0f18]/95 backdrop-blur-2xl border-t border-white/10 flex items-center justify-around shrink-0 z-30 pb-[env(safe-area-inset-bottom)]">
+      <nav className="h-16 px-2 bg-[#090c14]/95 backdrop-blur-2xl border-t border-white/10 flex items-center justify-around shrink-0 z-30 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_rgba(0,0,0,0.5)]">
         {[
           { id: "home", label: "Home", icon: Home },
           { id: "story", label: "Story", icon: BookOpen },
@@ -813,20 +826,24 @@ export default function MobileApp({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex flex-col items-center justify-center flex-1 py-1 transition-all cursor-pointer ${
-                isActive ? "text-emerald-400" : "text-white/50 hover:text-white/80"
-              }`}
+              className="flex flex-col items-center justify-center flex-1 py-1 cursor-pointer transition-all active:scale-95"
             >
-              <div className="relative">
-                <Icon size={19} className={isActive ? "scale-110 transition-transform" : ""} />
-                {isActive && (
-                  <motion.span
-                    layoutId="mobile-nav-dot"
-                    className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"
-                  />
-                )}
+              <div
+                className={`px-3 py-0.5 rounded-full transition-all duration-200 flex items-center justify-center ${
+                  isActive
+                    ? "bg-emerald-500/20 text-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.3)]"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                <Icon size={18} className={isActive ? "stroke-[2.5]" : "stroke-[1.8]"} />
               </div>
-              <span className="text-[10px] font-mono font-medium mt-1 leading-none">{tab.label}</span>
+              <span
+                className={`text-[10px] font-mono mt-1 tracking-tight transition-colors ${
+                  isActive ? "text-emerald-400 font-bold" : "text-slate-400"
+                }`}
+              >
+                {tab.label}
+              </span>
             </button>
           );
         })}

@@ -177,7 +177,7 @@ export default function InterviewModal({ open, onClose }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 pb-20 sm:pb-24 bg-black/75 backdrop-blur-md"
+        className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 sm:pb-24 bg-black/85 backdrop-blur-md"
         role="dialog"
         aria-label="Interview with Yug Pathak"
       >
@@ -187,10 +187,10 @@ export default function InterviewModal({ open, onClose }) {
           exit={{ scale: 0.94, opacity: 0 }}
           transition={{ type: "spring", stiffness: 280, damping: 26 }}
           className={cn(
-            "relative w-full flex flex-col bg-[#14161f] border border-white/20 shadow-2xl overflow-hidden transition-all duration-300",
+            "relative w-full flex flex-col bg-[#14161f] border-0 sm:border border-white/20 shadow-2xl overflow-hidden transition-all duration-300",
             isMaximized
               ? "h-full max-w-full rounded-none"
-              : "max-w-6xl h-[78vh] max-h-[720px] rounded-2xl"
+              : "max-w-6xl h-full sm:h-[78vh] sm:max-h-[720px] rounded-none sm:rounded-2xl"
           )}
         >
           {/* Video Call Top Bar */}
@@ -228,7 +228,7 @@ export default function InterviewModal({ open, onClose }) {
           {/* Main Content: Video Feed + Architecture Drawer */}
           <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden relative">
             {/* Left: 3D Visual Avatar Video Stream */}
-            <div className="relative flex-1 min-h-[320px] lg:min-h-0 bg-black flex flex-col justify-center items-center overflow-hidden">
+            <div className="relative h-[44vh] sm:h-auto sm:flex-1 bg-black flex flex-col justify-center items-center overflow-hidden shrink-0 sm:shrink">
               <AvatarCanvas isSpeaking={isSpeaking} />
 
               {/* Real-time Subtitles / Closed Captions */}
@@ -269,7 +269,7 @@ export default function InterviewModal({ open, onClose }) {
             </div>
 
             {/* Right: Live Interactive Architecture / Chat Drawer */}
-            <div className="w-full lg:w-[380px] bg-[#161823] border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col h-[300px] lg:h-full shrink-0">
+            <div className="w-full lg:w-[380px] bg-[#161823] border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col flex-1 min-h-0 lg:h-full">
               {/* Drawer Tab Header */}
               <div className="flex items-center justify-between px-3 py-2 border-b border-white/10 bg-[#12141c]">
                 <div className="flex items-center gap-2">
@@ -289,7 +289,7 @@ export default function InterviewModal({ open, onClose }) {
 
               {/* Architecture Slide-Out View OR Q&A Transcript */}
               {showArchDrawer && activeProject ? (
-                <div className="flex-1 p-4 overflow-y-auto bg-[#10121a]">
+                <div className="flex-1 p-4 overflow-y-auto no-scrollbar bg-[#10121a]" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="px-2 py-0.5 rounded text-[10px] font-mono tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
                       LIVE SCREEN SHARE · ARCHITECTURE
@@ -354,7 +354,7 @@ export default function InterviewModal({ open, onClose }) {
                   )}
                 </div>
               ) : (
-                <div ref={chatScrollRef} className="flex-1 p-3 overflow-y-auto space-y-3">
+                <div ref={chatScrollRef} className="flex-1 p-3 overflow-y-auto no-scrollbar space-y-3" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
                   {history.map((msg, i) => (
                     <div
                       key={i}

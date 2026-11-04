@@ -611,10 +611,12 @@ class InterviewSpeechManager {
       if (manlyVoice) {
         this.selectedVoice = manlyVoice;
         utterance.voice = manlyVoice;
+        utterance.lang = manlyVoice.lang || "en-US";
+      } else {
+        utterance.lang = "en-US";
       }
-      utterance.rate = 0.96;
-      // Heavy, deep, undeniably manly baritone voice (0.72)
-      utterance.pitch = 0.72;
+      utterance.rate = 1.02;
+      utterance.pitch = 1.02;
 
       utterance.onstart = () => {
         this.isSpeaking = true;

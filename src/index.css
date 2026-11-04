@@ -717,3 +717,19 @@ img, figure, svg {
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
 }
+
+/* Global sleek dark scrollbars to prevent default white browser scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
