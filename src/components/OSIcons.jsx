@@ -497,3 +497,15 @@ export const OSGalleryIcon = ({ size = 32, className = "" }) => {
     </div>
   );
 };
+
+// 9. MOBILE APP ICON
+export const OSMobileIcon = ({ size = 32, className = "" }) => {
+  return (
+    <div className={`relative flex items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-600 to-sky-500 shadow-md border border-white/30 ${className}`} style={{ width: size, height: size }}>
+      <div className="w-[52%] h-[80%] rounded-xs border-2 border-white flex flex-col items-center justify-between p-0.5">
+        <div className="w-2 h-0.5 rounded-full bg-white/70" />
+        <div className="w-1.5 h-1.5 rounded-full bg-emerald-300" />
+      </div>
+    </div>
+  );
+};

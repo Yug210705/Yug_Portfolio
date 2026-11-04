@@ -147,6 +147,10 @@ function AppInner() {
                     onAskYug={() => setTerminalOpen(true)}
                     openSettings={() => setSettingsOpen(true)}
                     openInterview={() => setInterviewOpen(true)}
+                    onOpenMobile={() => {
+                      setForceDesktop(false);
+                      setIsMobile(true);
+                    }}
                   />
                 )}
                 {phase === "story" && <StoryMode onOpenVoice={() => setVoiceOpen(true)} />}

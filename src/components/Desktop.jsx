@@ -36,6 +36,7 @@ import {
   OSSettingsIcon,
   OSInterviewIcon,
   OSGalleryIcon,
+  OSMobileIcon,
 } from "./OSIcons";
 import FieldGalleryModal from "./FieldGalleryModal";
 import DesktopContextMenu from "./DesktopContextMenu";
@@ -135,7 +136,7 @@ const DeskIcon = ({ icon: Icon, customIcon: CustomIcon, label, onOpen, testid, s
   );
 };
 
-const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview }) => {
+const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, onOpenMobile }) => {
   const { theme } = useTheme();
   const [chooserOpen, setChooserOpen] = useState(true);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -216,6 +217,7 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview })
           { customIcon: OSResumeIcon, label: "RECRUITER.TXT", onOpen: () => goMode("recruiter"), testid: "desktop-icon-recruiter" },
           { customIcon: OSLabIcon, label: "BUILDER_LAB.EXE", onOpen: () => goMode("builder"), testid: "desktop-icon-builder" },
           { customIcon: OSGalleryIcon, label: "FIELD_PROOF.EXE", onOpen: () => setGalleryOpen(true), testid: "desktop-icon-gallery" },
+          { customIcon: OSMobileIcon, label: "MOBILE_APP.EXE", onOpen: onOpenMobile, testid: "desktop-icon-mobile" },
           { customIcon: OSUserIcon, label: "ABOUT_YUG.TXT", onOpen: () => setAboutOpen(true), testid: "desktop-icon-about" },
           { customIcon: OSSettingsIcon, label: "CONTROL_PANEL.CPL", onOpen: openSettings, testid: "desktop-icon-settings" },
         ];
@@ -248,29 +250,118 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview })
               title="ABOUT_YUG.TXT — THE HUMAN BEHIND THE MACHINE"
               icon={User}
               onClose={() => setAboutOpen(false)}
-              className="pointer-events-auto w-full max-w-3xl max-h-[78vh] flex flex-col"
+              className="pointer-events-auto w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl"
             >
-              <div className="p-4 sm:p-5 bg-[var(--window-bg,#ece8dc)] text-[var(--window-text,#1a1a1a)] transition-colors overflow-y-auto flex-1 min-h-0">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-                  <div className="md:col-span-5 grid grid-cols-2 md:grid-cols-1 gap-2">
-                    <img src={CASUAL} alt="Yug Pathak" loading="lazy" className="w-full h-36 md:h-44 object-cover rounded-sm shadow-sm" />
-                    <img src={HEADSHOT} alt="Yug Pathak" loading="lazy" className="w-full h-36 md:h-44 object-cover rounded-sm shadow-sm hidden md:block" />
+              <div className="p-5 sm:p-6 bg-[#0f111a] text-[#f1f5f9] transition-colors overflow-y-auto flex-1 min-h-0 border-t border-white/10">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                  {/* Photo Column with cyber-border and badge */}
+                  <div className="md:col-span-5 space-y-3">
+                    <div className="relative group rounded-xl overflow-hidden border-2 border-emerald-500/40 shadow-xl bg-black/60">
+                      <img
+                        src={CASUAL}
+                        alt="Yug Pathak"
+                        loading="lazy"
+                        className="w-full h-52 sm:h-60 object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/80 backdrop-blur-md border border-emerald-400/50 text-[10px] font-mono text-emerald-400 font-bold flex items-center gap-1.5 shadow">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        BUILDING REAL SYSTEMS
+                      </div>
+                      <div className="absolute bottom-0 inset-x-0 p-2.5 bg-gradient-to-t from-black/95 via-black/70 to-transparent flex items-center justify-between text-[11px] font-mono text-white/90">
+                        <span>POORNIMA UNIV · JAIPUR</span>
+                        <span className="text-emerald-400 font-bold">8.88 CGPA</span>
+                      </div>
+                    </div>
+
+                    {/* Quick Metric Pills */}
+                    <div className="grid grid-cols-2 gap-2 text-center font-mono">
+                      <div className="p-2 rounded-lg bg-[#161a29] border border-white/10">
+                        <div className="text-base font-bold text-amber-400">₹75,000</div>
+                        <div className="text-[10px] text-white/60">SAP HackFest Winner</div>
+                      </div>
+                      <div className="p-2 rounded-lg bg-[#161a29] border border-white/10">
+                        <div className="text-base font-bold text-sky-400">2,300+</div>
+                        <div className="text-[10px] text-white/60">GDG Campus Lead</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="md:col-span-7 flex flex-col justify-between">
-                    <h3 className="font-vt text-xl sm:text-2xl font-bold mb-1">Yug Pathak</h3>
-                    <div className="font-vt text-sm text-[var(--accent-color,#000080)] mb-3">
-                      3RD-YEAR B.TECH CSE · POORNIMA UNIVERSITY, JAIPUR · 8.88 CGPA
+
+                  {/* Narrative & Details Column */}
+                  <div className="md:col-span-7 flex flex-col justify-between space-y-4">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                        <h2 className="font-vt text-3xl sm:text-4xl font-bold text-white tracking-wide leading-none">
+                          Yug Pathak
+                        </h2>
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-mono text-[11px] font-semibold">
+                          Open for SDE Roles & Internships
+                        </span>
+                      </div>
+                      <div className="font-mono text-xs sm:text-[13px] text-sky-400 font-medium">
+                        3rd-Year B.Tech CSE · Core Language: C++ · DevOps & Full-Stack AI
+                      </div>
                     </div>
-                    <p className="text-[14px] sm:text-[15px] leading-relaxed opacity-90 mb-3">
-                      Driven by curiosity and high-impact engineering. Builds production AI & backend systems,
-                      serves as official GDG On Campus Organizer (scaling to 2,300+ developers), and won 1st Place at SAP HackFest 2026.
+
+                    <p className="text-[13px] sm:text-[14px] leading-relaxed text-slate-300 font-sans">
+                      Driven by curiosity, practical problem-solving, and building technology with measurable real-world impact.
+                      From winning <strong>1st Place at SAP HackFest 2026</strong> for LinqChain (Resilience OS) to scaling Google Developer Groups on Campus to over <strong>2,300+ members</strong> across 15+ events, I focus on systems that run in production under pressure.
                     </p>
-                    <div className="bevel-in px-3 py-2 font-vt text-[13px] sm:text-[14px] mb-3 text-emerald-700 dark:text-emerald-300">
-                      STATUS: OPEN TO INTERNSHIPS & SDE ROLES · yugpathak2005@gmail.com
+
+                    {/* Highlight Tags */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {["C++ (DSA)", "FastAPI", "React", "Docker", "Kubernetes", "Jenkins", "AWS", "SAP HANA", "Wispr Flow"].map((t) => (
+                        <span key={t} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-white/80 font-mono text-[11px]">
+                          {t}
+                        </span>
+                      ))}
                     </div>
-                    <BevelBtn testid="about-open-terminal" onClick={() => { setAboutOpen(false); onAskYug(); }} className="w-full text-center py-2">
-                      RUN ASK_YUG.EXE — Interrogate the AI agent directly
-                    </BevelBtn>
+
+                    {/* Verified Connect Bar */}
+                    <div className="p-3 rounded-xl bg-[#141824] border border-white/10 flex flex-wrap items-center justify-between gap-2">
+                      <div className="text-[11px] font-mono text-slate-400 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                        <span>yugpathak2005@gmail.com</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href="https://github.com/Yug210705"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white text-xs font-mono font-medium transition-colors"
+                        >
+                          GitHub ↗
+                        </a>
+                        <a
+                          href="https://www.linkedin.com/in/yug-pathak-94b7b225b"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-1 rounded-md bg-sky-600/80 hover:bg-sky-500 text-white text-xs font-mono font-medium transition-colors"
+                        >
+                          LinkedIn ↗
+                        </a>
+                        <a
+                          href="/assets/resume.pdf"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-1 rounded-md bg-emerald-600/80 hover:bg-emerald-500 text-white text-xs font-mono font-medium transition-colors"
+                        >
+                          Resume ↗
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* High-Impact CTA */}
+                    <button
+                      testid="about-open-terminal"
+                      onClick={() => {
+                        setAboutOpen(false);
+                        onAskYug();
+                      }}
+                      className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 hover:brightness-110 text-white font-mono text-xs sm:text-sm font-bold tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/50 cursor-pointer active:scale-98 transition-all"
+                    >
+                      <span>⚡ RUN ASK_YUG.EXE — Interrogate the AI Agent directly</span>
+                      <span>↵</span>
+                    </button>
                   </div>
                 </div>
               </div>
