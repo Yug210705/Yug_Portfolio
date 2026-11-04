@@ -1,0 +1,19 @@
+{
+  "short_name": "YUG.EXE",
+  "name": "YUG.EXE — a computer that remembers",
+  "description": "Yug Pathak's portfolio: an operating system that remembers how it became a computer scientist.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0c0d12",
+  "theme_color": "#008080"
+}
