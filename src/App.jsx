@@ -14,6 +14,7 @@ import Terminal from "@/components/Terminal";
 import SettingsWindow from "@/components/SettingsWindow";
 import InterviewModal from "@/components/InterviewModal";
 import MobileApp from "@/components/MobileApp";
+import GuideTourBox from "@/components/GuideTourBox";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { OSSwitchTransition } from "@/components/OSSwitchTransition";
 
@@ -168,6 +169,7 @@ function AppInner() {
                 <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} />
                 <SettingsWindow open={settingsOpen} onClose={() => setSettingsOpen(false)} />
                 <InterviewModal open={interviewOpen} onClose={() => setInterviewOpen(false)} />
+                <GuideTourBox />
               </>
             )}
           </>

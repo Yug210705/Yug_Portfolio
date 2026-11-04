@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, TerminalSquare, CornerDownLeft } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { getInterviewAnswer } from "@/lib/interviewEngine";
 import { cn } from "@/lib/utils";
 
 const QUICK = ["strongest project?", "the ₹3,000 story", "why wispr flow?", "how do I hire you?", "what did you still not figure out?"];
@@ -97,53 +98,101 @@ const Terminal = ({ open, onClose }) => {
     }
     messagesRef.current = [...messagesRef.current, { role: "agent", text: "" }];
     render();
-    const payload = JSON.stringify({
-      sessionId: sessionId.current,
-      messages: messagesRef.current.filter((m) => m.role).map(({ role, text: t }) => ({ role, content: t })),
-    });
+
     const patchLast = (chunk) => {
       const last = messagesRef.current[messagesRef.current.length - 1];
       last.text += chunk;
       render();
     };
+
     let got = "";
-    try {
-      const ctrl = new AbortController();
-      const killer = setTimeout(() => ctrl.abort(), 30000);
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/agent`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: payload,
-        signal: ctrl.signal,
-      });
-      if (res.ok && res.body) {
-        const reader = res.body.getReader();
-        const dec = new TextDecoder();
-        for (;;) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = dec.decode(value, { stream: true });
-          got += chunk;
-          patchLast(chunk);
-        }
-      }
-      clearTimeout(killer);
-    } catch (e) {
-      /* fall through to sync fallback */
-    }
-    if (!got.trim()) {
+    const openRouterKey =
+      process.env.OPEN_ROUTER_API_KEY ||
+      (typeof import.meta !== "undefined" && import.meta.env?.VITE_OPEN_ROUTER_API_KEY) ||
+      "";
+
+    // 1. First Attempt: Real-time dynamic response via OpenRouter
+    if (openRouterKey) {
       try {
-        const res2 = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/agent/sync`, {
+        const ctrl = new AbortController();
+        const timeout = setTimeout(() => ctrl.abort(), 20000);
+
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: payload,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${openRouterKey}`,
+            "HTTP-Referer": "https://yug-portfolio.vercel.app",
+            "X-Title": "Yug Pathak Terminal",
+          },
+          signal: ctrl.signal,
+          body: JSON.stringify({
+            model: "google/gemini-2.0-flash-001",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are Yug Pathak's AI persona inside the retro terminal ASK_YUG.EXE. Respond directly as Yug in the first person ('I', 'my'). Be crisp, technical, confident, and direct (2 to 4 sentences). Mention your real work: LinqChain (Resilience OS, SAP HackFest 2026 winner ₹75k), OBS on Monad, Campus OS, Freight Cost Predictor for Volkswagen, Project Pravah for SIH Oil India, GDG On Campus Lead (2,300+ members), Mittal Alliance frontend intern (10+ APIs), Deccan AI (RLHF/SFT), C++ DSA, and DevOps (Docker, k8s, Jenkins, AWS). Email: yugpathak2005@gmail.com.",
+              },
+              ...messagesRef.current
+                .filter((m) => m.role)
+                .map(({ role, text: t }) => ({
+                  role: role === "agent" ? "assistant" : "user",
+                  content: t,
+                })),
+            ],
+            stream: true,
+          }),
         });
-        const data = await res2.json();
-        patchLast((data.reply || "") + (data.reply ? "" : "\n[agent uplink down — email yugpathak2005@gmail.com]"));
-      } catch (e) {
-        patchLast("\n[agent uplink down — email yugpathak2005@gmail.com]");
+
+        clearTimeout(timeout);
+
+        if (res.ok && res.body) {
+          const reader = res.body.getReader();
+          const dec = new TextDecoder();
+          let buffer = "";
+
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += dec.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (trimmed.startsWith("data: ") && trimmed !== "data: [DONE]") {
+                try {
+                  const parsed = JSON.parse(trimmed.slice(6));
+                  const delta = parsed.choices?.[0]?.delta?.content || "";
+                  if (delta) {
+                    got += delta;
+                    patchLast(delta);
+                  }
+                } catch (e) {}
+              }
+            }
+          }
+        }
+      } catch (err) {
+        // Fall back to knowledge base or backend
       }
     }
+
+    // 2. Second Attempt: If no OpenRouter response, use local interview knowledge base
+    if (!got.trim()) {
+      const fallbackAns = getInterviewAnswer(text);
+      if (fallbackAns && fallbackAns.answer) {
+        got = fallbackAns.answer;
+        patchLast(got);
+      }
+    }
+
+    // 3. Third Attempt: Backend uplink or email note
+    if (!got.trim()) {
+      patchLast("\n[agent uplink down — email yugpathak2005@gmail.com]");
+    }
+
     messagesRef.current.streaming = false;
   };
 

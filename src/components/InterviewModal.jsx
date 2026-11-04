@@ -19,7 +19,7 @@ import {
   Minimize2,
 } from "lucide-react";
 import AvatarCanvas from "./AvatarCanvas";
-import { PRESET_QUESTIONS, getInterviewAnswer, speechManager, getIntroductionText } from "@/lib/interviewEngine";
+import { PRESET_QUESTIONS, getInterviewAnswer, getInterviewAnswerAsync, speechManager, getIntroductionText } from "@/lib/interviewEngine";
 import { PROJECTS } from "@/data/content";
 import { useTheme } from "@/context/ThemeContext";
 import { cn } from "@/lib/utils";
@@ -41,7 +41,7 @@ export default function InterviewModal({ open, onClose }) {
   const [showArchDrawer, setShowArchDrawer] = useState(false);
   const [micMuted, setMicMuted] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [captionsEnabled, setCaptionsEnabled] = useState(true);
+  const [captionsEnabled, setCaptionsEnabled] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
 
@@ -112,16 +112,18 @@ export default function InterviewModal({ open, onClose }) {
 
   // Submit Interview Question
   const handleAsk = useCallback(
-    (query) => {
+    async (query) => {
       const q = query || userQuery;
       if (!q.trim()) return;
 
       setUserQuery("");
       const userEntry = { role: "user", text: q };
-      const { answer, project } = getInterviewAnswer(q);
+      setHistory((prev) => [...prev, userEntry]);
+
+      const { answer, project } = await getInterviewAnswerAsync(q);
       const yugEntry = { role: "yug", text: answer, project };
 
-      setHistory((prev) => [...prev, userEntry, yugEntry]);
+      setHistory((prev) => [...prev, yugEntry]);
       handleAnswer(answer, project);
     },
     [userQuery, handleAnswer]

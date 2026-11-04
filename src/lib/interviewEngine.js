@@ -246,6 +246,83 @@ export function getInterviewAnswer(query) {
   };
 }
 
+export async function getInterviewAnswerAsync(query) {
+  const localMatch = getInterviewAnswer(query);
+  // If we had a strong direct match from curated knowledge, return immediately
+  if (localMatch.answer !== DEFAULT_RESPONSE) {
+    return localMatch;
+  }
+
+  // Check OpenRouter API key
+  const apiKey =
+    process.env.OPEN_ROUTER_API_KEY ||
+    (typeof import.meta !== "undefined" && import.meta.env?.VITE_OPEN_ROUTER_API_KEY) ||
+    "";
+
+  if (!apiKey) {
+    return localMatch;
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 9000);
+
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+        "HTTP-Referer": "https://yug-portfolio.vercel.app",
+        "X-Title": "Yug Pathak AI Interview",
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: "google/gemini-2.0-flash-001",
+        messages: [
+          {
+            role: "system",
+            content: `You are Yug Pathak, a 3rd-year B.Tech CSE student at Poornima University, Jaipur (8.88 CGPA), originally from Gurgaon.
+You are in a live technical interview speaking to an interviewer.
+Answer directly as Yug in the first person ('I', 'my'). Be concise, sharp, and natural (2 to 4 sentences maximum, spoken aloud by speech synthesis).
+Key facts to draw upon when relevant:
+- Primary programming language: C++, strong foundations in Data Structures and Algorithms.
+- Frontend & Full-Stack: React, Tailwind CSS, TypeScript, FastAPI, Node.js.
+- Systems & DevOps: Jenkins, Docker, Kubernetes, SonarQube, Maven, AWS (CI/CD pipelines, container orchestration, quality gates).
+- Professional: Frontend Developer Intern at Mittal Alliance (built websites for international clients, 10+ REST APIs), Deccan AI (RLHF & SFT AI model training).
+- Leadership: Google Developer Groups on Campus Lead at Poornima University (scaled community from 1,100 to 2,300+ members, organized 15+ events).
+- Hackathons: Winner at SAP HackFest 2026 (₹75k prize with Team CodeHens for LinqChain/Resilience OS), semifinalist at SCPC National Hackathon, Top 5 at LNMHacks 8.0.
+- Key projects: LinqChain (Resilience OS - SAP supply chain control room), OBS (Oracle Before Signing on Monad blockchain), Campus OS (multi-tenant university system), Freight Cost Predictor (Volkswagen logistics ML), Project Pravah (SIH/Oil India telemetry IoT).
+Never break character. Do not use markdown fences, bullets, or asterisks; output conversational plain text that can be spoken directly.`,
+          },
+          {
+            role: "user",
+            content: query,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: 180,
+      }),
+    });
+
+    clearTimeout(timeout);
+
+    if (response.ok) {
+      const data = await response.json();
+      const reply = data?.choices?.[0]?.message?.content?.trim();
+      if (reply) {
+        return {
+          answer: reply,
+          project: null,
+        };
+      }
+    }
+  } catch (err) {
+    // Graceful fallback to local response
+  }
+
+  return localMatch;
+}
+
 // Phonetic analysis mapping spoken words to realistic mouth visemes and durations
 export function getWordVisemePlan(rawWord) {
   if (!rawWord) return [{ viseme: "rest", duration: 180 }];
