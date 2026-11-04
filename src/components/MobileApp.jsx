@@ -552,12 +552,12 @@ export default function MobileApp({
             exit={{ opacity: 0 }}
             className="space-y-3 max-w-full"
           >
-            <div className="flex items-center justify-between pb-1">
-              <div>
-                <h2 className="text-lg font-black text-white">Engineered Systems</h2>
-                <p className="text-[11px] text-slate-400 font-mono">Production architectures & verified codebases</p>
+            <div className="flex items-center justify-between gap-3 pb-1">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-lg font-black text-white leading-tight">Engineered Systems</h2>
+                <p className="text-[11px] text-slate-400 font-mono truncate">Production architectures & verified codebases</p>
               </div>
-              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+              <span className="shrink-0 whitespace-nowrap text-xs font-mono font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm">
                 {PROJECTS.length} Systems
               </span>
             </div>

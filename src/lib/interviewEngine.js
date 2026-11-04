@@ -406,59 +406,70 @@ class InterviewSpeechManager {
     }
   }
 
+  isStrictlyFemale(v) {
+    if (!v) return true;
+    const name = (v.name || "").toLowerCase();
+    const uri = (v.voiceURI || "").toLowerCase();
+    // Words and patterns that strictly denote female voices
+    return (
+      name.includes("female") ||
+      uri.includes("female") ||
+      name.includes("woman") ||
+      name.includes("girl") ||
+      name.includes("zira") ||
+      name.includes("neerja") ||
+      name.includes("heera") ||
+      name.includes("swara") ||
+      name.includes("ananya") ||
+      name.includes("shruti") ||
+      name.includes("priya") ||
+      name.includes("veena") ||
+      name.includes("samantha") ||
+      name.includes("victoria") ||
+      name.includes("karen") ||
+      name.includes("susan") ||
+      name.includes("hazel") ||
+      name.includes("catherine") ||
+      name.includes("linda") ||
+      name.includes("jenny") ||
+      name.includes("aria") ||
+      name.includes("eva") ||
+      uri.includes("en-in-x-end") ||
+      uri.includes("en-in-x-ene") ||
+      uri.includes("en-us-x-sfg") ||
+      uri.includes("en-gb-x-fis")
+    );
+  }
+
+  isExplicitlyMale(v) {
+    if (!v || this.isStrictlyFemale(v)) return false;
+    const name = (v.name || "").toLowerCase();
+    const uri = (v.voiceURI || "").toLowerCase();
+    const combined = `${name} ${uri}`;
+    return (
+      /(^|[^a-z])male([^a-z]|$)/i.test(combined) ||
+      name.includes("david") ||
+      name.includes("mark") ||
+      name.includes("prabhat") ||
+      name.includes("ravi") ||
+      name.includes("guy") ||
+      name.includes("george") ||
+      name.includes("daniel") ||
+      name.includes("oliver") ||
+      name.includes("rishi") ||
+      name.includes("alex") ||
+      name.includes("fred") ||
+      uri.includes("iom") ||
+      uri.includes("cfl") ||
+      uri.includes("rjs") ||
+      uri.includes("iol")
+    );
+  }
+
   findManlyVoice() {
     if (!this.synth) return null;
     const voices = this.synth.getVoices();
     if (!voices || voices.length === 0) return null;
-
-    // Strict filter to exclude female voices across Windows, Edge, Android Chrome, and iOS
-    const isStrictlyFemale = (v) => {
-      const name = (v.name || "").toLowerCase();
-      const uri = (v.voiceURI || "").toLowerCase();
-      return (
-        name.includes("female") || uri.includes("female") ||
-        name.includes("woman") || name.includes("girl") ||
-        name.includes("zira") || name.includes("neerja") || name.includes("heera") ||
-        name.includes("swara") || name.includes("ananya") || name.includes("shruti") ||
-        name.includes("priya") || name.includes("veena") || name.includes("samantha") ||
-        name.includes("victoria") || name.includes("karen") || name.includes("susan") ||
-        name.includes("hazel") || name.includes("catherine") || name.includes("linda") ||
-        name.includes("jenny") || name.includes("aria") || name.includes("eva") ||
-        name.includes("google us english") || name.includes("google english (india)") ||
-        name.includes("google uk english female") ||
-        uri.includes("en-in-x-end") || uri.includes("en-in-x-ene") || uri.includes("en-us-x-sfg")
-      );
-    };
-
-    // Explicit male detection across Windows, Mac, Android, and iOS
-    const isExplicitlyMale = (v) => {
-      const name = (v.name || "").toLowerCase();
-      const uri = (v.voiceURI || "").toLowerCase();
-      return (
-        name.includes("male") || uri.includes("male") ||
-        name.includes("uk english male") ||
-        name.includes("prabhat") ||
-        name.includes("ravi") ||
-        name.includes("mohan") ||
-        name.includes("kunal") ||
-        name.includes("aarav") ||
-        name.includes("david") ||
-        name.includes("mark") ||
-        name.includes("guy") ||
-        name.includes("christopher") ||
-        name.includes("ryan") ||
-        name.includes("george") ||
-        name.includes("daniel") ||
-        name.includes("oliver") ||
-        name.includes("alex") ||
-        name.includes("fred") ||
-        name.includes("rishi") ||
-        uri.includes("iom") ||
-        uri.includes("cfl") ||
-        uri.includes("iol") ||
-        uri.includes("rjs")
-      );
-    };
 
     const isIndian = (v) => {
       const lang = (v.lang || "").toLowerCase().replace(/_/g, "-");
@@ -473,27 +484,27 @@ class InterviewSpeechManager {
     };
 
     // 1. Prioritize verified Indian male voice (e.g. Microsoft Prabhat, Ravi, en-in-x-cfl#male)
-    const indianMale = voices.find((v) => isIndian(v) && isExplicitlyMale(v) && !isStrictlyFemale(v));
+    const indianMale = voices.find((v) => isIndian(v) && this.isExplicitlyMale(v));
     if (indianMale) return indianMale;
 
     // 2. Prioritize verified English male voice (e.g. Google UK English Male, Microsoft David, Guy)
     const englishMale = voices.find(
-      (v) => (v.lang || "").toLowerCase().startsWith("en") && isExplicitlyMale(v) && !isStrictlyFemale(v)
+      (v) => (v.lang || "").toLowerCase().startsWith("en") && this.isExplicitlyMale(v)
     );
     if (englishMale) return englishMale;
 
     // 3. Any voice explicitly tagged male
-    const anyMale = voices.find((v) => isExplicitlyMale(v) && !isStrictlyFemale(v));
+    const anyMale = voices.find((v) => this.isExplicitlyMale(v));
     if (anyMale) return anyMale;
 
     // 4. Any English voice that is strictly non-female
     const nonFemaleEnglish = voices.find(
-      (v) => (v.lang || "").toLowerCase().startsWith("en") && !isStrictlyFemale(v)
+      (v) => (v.lang || "").toLowerCase().startsWith("en") && !this.isStrictlyFemale(v)
     );
     if (nonFemaleEnglish) return nonFemaleEnglish;
 
     // 5. Fallback non-female voice
-    return voices.find((v) => !isStrictlyFemale(v)) || voices[0];
+    return voices.find((v) => !this.isStrictlyFemale(v)) || voices[0];
   }
 
   initVoices() {
@@ -615,8 +626,9 @@ class InterviewSpeechManager {
       } else {
         utterance.lang = "en-US";
       }
-      utterance.rate = 1.02;
-      utterance.pitch = 1.02;
+      const isMale = manlyVoice && this.isExplicitlyMale(manlyVoice);
+      utterance.rate = 0.98;
+      utterance.pitch = isMale ? 0.88 : 0.62;
 
       utterance.onstart = () => {
         this.isSpeaking = true;
