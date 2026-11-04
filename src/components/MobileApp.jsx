@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Home,
+  BookOpen,
   Briefcase,
   Camera,
   Video,
@@ -30,8 +31,10 @@ import {
   HelpCircle,
   Copy,
   Check,
+  Clock,
+  Terminal,
 } from "lucide-react";
-import { RECRUITER, PROJECTS, FIELD_ARCHIVES, LINKS } from "@/data/content";
+import { RECRUITER, PROJECTS, FIELD_ARCHIVES, LINKS, CHAPTERS } from "@/data/content";
 
 const HEADSHOT = "/assets/headshot.png";
 const CASUAL = "/assets/casual.png";
@@ -77,16 +80,16 @@ export default function MobileApp({
   return (
     <div className="fixed inset-0 bg-[#07090e] text-[#f1f5f9] flex flex-col font-sans select-none overflow-hidden z-50">
       {/* Background Ambient Glow Orbs */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[350px] h-[350px] bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-sky-500/15 rounded-full blur-[90px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[340px] h-[340px] bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-sky-500/15 rounded-full blur-[90px] pointer-events-none" />
       <div className="absolute bottom-20 right-0 w-[240px] h-[240px] bg-sky-500/10 rounded-full blur-[80px] pointer-events-none" />
 
       {/* Top Phone Status Bar */}
       <div className="h-10 px-5 flex items-center justify-between text-[11px] font-semibold text-white/70 shrink-0 border-b border-white/5 bg-[#0a0d14]/90 backdrop-blur-md z-20">
-        <span className="font-mono">{currentTime || "11:30 PM"}</span>
+        <span className="font-mono">{currentTime || "12:10 AM"}</span>
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-emerald-400 font-mono tracking-wider flex items-center gap-1 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-            ONLINE
+            LIVE
           </span>
           <span className="text-[11px] font-mono">5G</span>
           <div className="w-5 h-2.5 border border-white/60 rounded-xs p-0.5 flex items-center">
@@ -135,7 +138,7 @@ export default function MobileApp({
           transition={{ repeat: Infinity, duration: 24, ease: "linear" }}
           className="whitespace-nowrap flex items-center gap-6 text-[10px] font-mono text-emerald-300 font-medium"
         >
-          <span>🏆 1st Place Winner: SAP HackFest 2026 (₹75,000 Cheque)</span>
+          <span>🏆 National Finalist: SAP HackFest 2026 (Team CodeHens)</span>
           <span>✦ Google Developer Groups on Campus Lead (1,100 → 2,300+ Members)</span>
           <span>⚡ 8.88 CGPA · 3rd-Year B.Tech CSE (Poornima University)</span>
           <span>🚀 LinqChain (Resilience OS) Enterprise Supply Chain Simulation</span>
@@ -144,10 +147,13 @@ export default function MobileApp({
         </motion.div>
       </div>
 
-      {/* Main Scrollable View Area */}
-      <main className="flex-1 min-h-0 overflow-y-auto px-4 py-4 pb-24 space-y-4 z-10">
+      {/* Main Scrollable View Area with NO SCROLLER (Swipe Only) */}
+      <main
+        className="flex-1 min-h-0 overflow-y-auto no-scrollbar touch-pan-y px-4 py-4 pb-24 space-y-4 z-10"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
         {/* ============================================================== */}
-        {/* TAB 1: HOME (Instant 1-Second Wow Impression) */}
+        {/* TAB 1: HOME */}
         {/* ============================================================== */}
         {activeTab === "home" && (
           <motion.div
@@ -213,8 +219,8 @@ export default function MobileApp({
                 <div className="text-[9px] text-white/60 uppercase tracking-widest font-mono mt-0.5">CGPA</div>
               </div>
               <div className="p-3 rounded-xl bg-[#111422] border border-white/10 text-center shadow-lg">
-                <div className="text-xl font-black text-amber-400 font-mono">₹75K</div>
-                <div className="text-[9px] text-white/60 uppercase tracking-widest font-mono mt-0.5">SAP Winner</div>
+                <div className="text-sm font-black text-amber-400 font-mono pt-1">FINALIST</div>
+                <div className="text-[9px] text-white/60 uppercase tracking-widest font-mono mt-0.5">SAP Hackfest</div>
               </div>
               <div className="p-3 rounded-xl bg-[#111422] border border-white/10 text-center shadow-lg">
                 <div className="text-xl font-black text-sky-400 font-mono">2,300+</div>
@@ -258,13 +264,32 @@ export default function MobileApp({
               </button>
             </div>
 
-            {/* Featured System Hero Card: LinqChain (Resilience OS) */}
+            {/* Read the Full Story Banner (Class 6th to 3rd Year) */}
+            <div
+              onClick={() => setActiveTab("story")}
+              className="p-3.5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-[#151929] to-indigo-950/40 border border-purple-500/30 flex items-center justify-between cursor-pointer active:scale-98 transition-all shadow"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-300 flex items-center justify-center shrink-0">
+                  <BookOpen size={18} />
+                </div>
+                <div>
+                  <div className="font-bold text-xs text-white">The Journey: Class 6th → 3rd Year</div>
+                  <div className="text-[11px] text-slate-300 mt-0.5">MS Paint, QBasic, JEE pivot, GDG Lead & SAP Finals</div>
+                </div>
+              </div>
+              <span className="text-xs font-mono font-bold text-purple-400 shrink-0">READ →</span>
+            </div>
+
+            {/* Featured System Hero Card: LinqChain (Resilience OS) - NO BADGE OVERLAP */}
             <div className="p-4 rounded-2xl bg-gradient-to-br from-[#13192b] to-[#0c0f18] border-2 border-emerald-500/40 shadow-xl space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                  🏆 SAP HACKFEST 2026 WINNER (₹75,000)
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                <span className="self-start px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                  🏆 SAP HACKFEST '26 NATIONAL FINALIST
                 </span>
-                <span className="text-[10px] font-mono text-emerald-400">COMMAND CENTER</span>
+                <span className="text-[10px] font-mono text-emerald-400 font-bold self-start sm:self-auto">
+                  ENTERPRISE COMMAND CENTER
+                </span>
               </div>
               <div>
                 <h3 className="text-base font-bold text-white tracking-wide">
@@ -347,7 +372,94 @@ export default function MobileApp({
         )}
 
         {/* ============================================================== */}
-        {/* TAB 2: PROJECTS (All 7 Deep Architectures with Working Links) */}
+        {/* TAB 2: STORY (Class 6th to 3rd Year B.Tech Full Journey) */}
+        {/* ============================================================== */}
+        {activeTab === "story" && (
+          <motion.div
+            key="tab-story"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="space-y-4"
+          >
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-950/60 to-indigo-950/60 border border-purple-500/30">
+              <span className="text-[10px] font-mono text-purple-300 uppercase tracking-widest font-bold">
+                CHRONOLOGICAL MEMORY ARCHIVE
+              </span>
+              <h2 className="text-xl font-black text-white mt-0.5">Class 6th → 3rd Year B.Tech</h2>
+              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                Eleven interconnected chapters. Every breakthrough, pivot, failure, and hackathon stage that turned a curious kid into an engineer.
+              </p>
+            </div>
+
+            {/* Chapters Timeline List */}
+            <div className="space-y-4 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-gradient-to-b before:from-purple-500/60 before:via-emerald-500/40 before:to-sky-500/60">
+              {CHAPTERS.map((ch, idx) => (
+                <div key={ch.id} className="relative pl-9 space-y-2">
+                  {/* Timeline Node Dot */}
+                  <div className="absolute left-1.5 top-2 w-4 h-4 rounded-full bg-[#0a0d14] border-2 border-purple-400 flex items-center justify-center text-[8px] font-mono text-purple-300 font-bold">
+                    {idx + 1}
+                  </div>
+
+                  {/* Chapter Card */}
+                  <div className="p-4 rounded-2xl bg-[#111422] border border-white/10 shadow-lg space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-bold text-purple-400 tracking-wider">
+                        CH {ch.num} · {ch.era}
+                      </span>
+                      <span className="text-[10px] font-mono text-white/50">{ch.label}</span>
+                    </div>
+
+                    <h3 className="font-bold text-sm text-white tracking-wide">
+                      {ch.lines && ch.lines.join(" ")}
+                    </h3>
+
+                    <div className="space-y-2 text-xs text-slate-300 leading-relaxed font-sans">
+                      {ch.paras && ch.paras.map((para, pIdx) => (
+                        <p key={pIdx}>{para}</p>
+                      ))}
+                    </div>
+
+                    {/* Attached Photo if present */}
+                    {ch.photo && (
+                      <div className="rounded-xl overflow-hidden border border-white/10 mt-2">
+                        <img
+                          src={ch.photo.src}
+                          alt={ch.photo.caption}
+                          loading="lazy"
+                          className="w-full h-40 object-cover"
+                        />
+                        <div className="p-2 bg-black/60 font-mono text-[10px] text-slate-400 text-center">
+                          {ch.photo.caption}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Quote Box */}
+                    {ch.quote && (
+                      <div className="p-3 rounded-xl bg-purple-950/30 border-l-2 border-purple-400 text-xs italic text-purple-200">
+                        "{ch.quote.text}"
+                        <div className="text-[10px] text-purple-300/70 font-mono not-italic mt-1">
+                          — {ch.quote.by}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Cause and Effect Footer */}
+                    {ch.effect && (
+                      <div className="text-[11px] font-mono text-emerald-400 font-semibold pt-1 border-t border-white/5">
+                        {ch.effect}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* ============================================================== */}
+        {/* TAB 3: PROJECTS */}
         {/* ============================================================== */}
         {activeTab === "projects" && (
           <motion.div
@@ -485,7 +597,7 @@ export default function MobileApp({
         )}
 
         {/* ============================================================== */}
-        {/* TAB 3: FIELD PROOF (Real Photos from Stages, Hackathons, Letters) */}
+        {/* TAB 4: FIELD PROOF (Stages & Real Photos) */}
         {/* ============================================================== */}
         {activeTab === "proof" && (
           <motion.div
@@ -503,7 +615,7 @@ export default function MobileApp({
             </div>
 
             {/* Filter Pills */}
-            <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat}
@@ -567,7 +679,7 @@ export default function MobileApp({
         )}
 
         {/* ============================================================== */}
-        {/* TAB 4: INTERVIEW (Virtual Technical Interview) */}
+        {/* TAB 5: INTERVIEW (Manly Voice 3D Virtual Technical Interview) */}
         {/* ============================================================== */}
         {activeTab === "interview" && (
           <motion.div
@@ -585,7 +697,7 @@ export default function MobileApp({
 
             <div>
               <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-2">
-                MULTIMODAL AI AGENT
+                MULTIMODAL AI AGENT · BARITONE CADENCE
               </span>
               <h2 className="text-2xl font-black text-white">Live Virtual Interview</h2>
               <p className="text-xs text-slate-300 max-w-xs mx-auto mt-1 leading-relaxed">
@@ -614,130 +726,16 @@ export default function MobileApp({
             </button>
           </motion.div>
         )}
-
-        {/* ============================================================== */}
-        {/* TAB 5: RECRUITER DOSSIER */}
-        {/* ============================================================== */}
-        {activeTab === "recruiter" && (
-          <motion.div
-            key="tab-recruiter"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="space-y-4"
-          >
-            <div className="flex items-center justify-between pb-1">
-              <div>
-                <h2 className="text-lg font-black text-white">Recruiter 60-Sec Dossier</h2>
-                <p className="text-[11px] text-slate-400 font-mono">Facts, verified credentials & direct contact</p>
-              </div>
-              <a
-                href={LINKS.resume}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5 shadow"
-              >
-                <FileDown size={14} />
-                <span>PDF</span>
-              </a>
-            </div>
-
-            {/* Profile Overview */}
-            <div className="p-4 rounded-2xl bg-[#111422] border border-white/10 space-y-3 shadow-lg">
-              <div className="flex items-center gap-3">
-                <img
-                  src={HEADSHOT}
-                  alt="Yug"
-                  className="w-14 h-14 rounded-2xl object-cover border-2 border-white/20 shadow"
-                />
-                <div>
-                  <h3 className="font-bold text-base text-white">{RECRUITER.name}</h3>
-                  <div className="text-xs text-emerald-400 font-mono font-medium">{RECRUITER.role}</div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">{RECRUITER.education}</div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/10 text-center font-mono">
-                {RECRUITER.stats.map((s) => (
-                  <div key={s.v} className="p-2 rounded-xl bg-black/40">
-                    <div className="text-base font-bold text-sky-400">{s.k}</div>
-                    <div className="text-[9px] text-white/50 tracking-wider uppercase">{s.v}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Highlights */}
-            <div className="space-y-2">
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white/70">
-                Verified Career Highlights
-              </h3>
-              {RECRUITER.highlights.map((h) => (
-                <div
-                  key={h.org}
-                  className="p-3 rounded-xl bg-[#111422] border border-white/5 flex items-start gap-2.5 shadow-sm"
-                >
-                  <Award size={16} className="text-amber-400 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="font-bold text-xs text-white">{h.org}</div>
-                    <div className="text-[11px] text-slate-300 mt-0.5 leading-snug">{h.what}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Direct Connect Grid */}
-            <div className="p-4 rounded-2xl bg-[#111422] border border-white/10 space-y-3">
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-white/70">
-                Direct Contact Channels
-              </h3>
-              <div className="grid grid-cols-2 gap-2">
-                <a
-                  href={`mailto:${LINKS.email}`}
-                  className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-medium flex items-center gap-2"
-                >
-                  <Mail size={15} className="text-emerald-400" />
-                  <span className="truncate">Email Me</span>
-                </a>
-                <a
-                  href={LINKS.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-medium flex items-center gap-2"
-                >
-                  <Linkedin size={15} className="text-sky-400" />
-                  <span className="truncate">LinkedIn</span>
-                </a>
-                <a
-                  href={LINKS.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-medium flex items-center gap-2"
-                >
-                  <Github size={15} className="text-white/80" />
-                  <span className="truncate">GitHub</span>
-                </a>
-                <button
-                  onClick={onOpenTerminal}
-                  className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-medium flex items-center gap-2 cursor-pointer"
-                >
-                  <Zap size={15} className="text-amber-400" />
-                  <span className="truncate">Ask AI Agent</span>
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
       </main>
 
-      {/* Floating Bottom Navigation Bar */}
+      {/* Floating Bottom Navigation Bar (Home, Story, Projects, Proof, Interview) */}
       <nav className="h-16 px-2 bg-[#0c0f18]/95 backdrop-blur-2xl border-t border-white/10 flex items-center justify-around shrink-0 z-30 pb-[env(safe-area-inset-bottom)]">
         {[
           { id: "home", label: "Home", icon: Home },
+          { id: "story", label: "Story", icon: BookOpen },
           { id: "projects", label: "Projects", icon: Briefcase },
           { id: "proof", label: "Proof", icon: Camera },
           { id: "interview", label: "Interview", icon: Video },
-          { id: "recruiter", label: "Dossier", icon: FileText },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

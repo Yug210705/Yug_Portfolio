@@ -276,8 +276,8 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, o
                     {/* Quick Metric Pills */}
                     <div className="grid grid-cols-2 gap-2 text-center font-mono">
                       <div className="p-2 rounded-lg bg-[#161a29] border border-white/10">
-                        <div className="text-base font-bold text-amber-400">₹75,000</div>
-                        <div className="text-[10px] text-white/60">SAP HackFest Winner</div>
+                        <div className="text-base font-bold text-amber-400">FINALIST</div>
+                        <div className="text-[10px] text-white/60">SAP HackFest Finalist</div>
                       </div>
                       <div className="p-2 rounded-lg bg-[#161a29] border border-white/10">
                         <div className="text-base font-bold text-sky-400">2,300+</div>
@@ -304,7 +304,7 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, o
 
                     <p className="text-[13px] sm:text-[14px] leading-relaxed text-slate-300 font-sans">
                       Driven by curiosity, practical problem-solving, and building technology with measurable real-world impact.
-                      From winning <strong>1st Place at SAP HackFest 2026</strong> for LinqChain (Resilience OS) to scaling Google Developer Groups on Campus to over <strong>2,300+ members</strong> across 15+ events, I focus on systems that run in production under pressure.
+                      From winning <strong>National Finalist at SAP HackFest 2026</strong> for LinqChain (Resilience OS) to scaling Google Developer Groups on Campus to over <strong>2,300+ members</strong> across 15+ events, I focus on systems that run in production under pressure.
                     </p>
 
                     {/* Highlight Tags */}

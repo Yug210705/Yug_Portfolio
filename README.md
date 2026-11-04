@@ -1,6 +1,6 @@
 # Yug_Portfolio — Interactive Multi-OS Engineering Portfolio
 
-Built as an authentic multi-OS interactive portfolio celebrating Yug Pathak's software engineering journey — from MS Paint and QBasic to hackathon victories (SAP HackFest 2026 Winner ₹75k, LNM Hacks, IQOO Regional Finals, GDG On Campus Lead) and production systems (Resilience OS / LinqChain, OBS, Campus OS, FinAssist, Freight Cost Predictor).
+Built as an authentic multi-OS interactive portfolio celebrating Yug Pathak's software engineering journey — from MS Paint and QBasic to hackathon victories (SAP HackFest 2026 National Finalist, LNM Hacks, IQOO Regional Finals, GDG On Campus Lead) and production systems (Resilience OS / LinqChain, OBS, Campus OS, FinAssist, Freight Cost Predictor).
 
 ---
 

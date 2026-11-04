@@ -119,7 +119,7 @@ const KNOWLEDGE_RESPONSES = [
   {
     keywords: ["linqchain", "resilience", "resilience os", "supply chain", "control center", "sap cap", "hana", "xyflow"],
     answer:
-      "LinqChain (Resilience OS) is an enterprise supply chain command center that deterministically simulates systemic disruptions, predicts multi-tier bottlenecks, and computes optimal recovery paths before catastrophic supply failure occurs. Architecturally, it features a Next.js 14 interactive dashboard utilizing dynamic directed network graphs (@xyflow/react) and Recharts. The computational core runs on Python with FastAPI and SQLAlchemy, hosting a high-throughput deterministic simulation engine. A custom AI Adapter interfaces with enterprise LLMs under deterministic bounds — the LLM can only suggest strategies within pre-calculated feasible simulation states, ensuring hallucination-proof recommendations. Supply telemetry and multi-tier bills of materials are managed on an enterprise SAP Cloud Application Programming Model (CAP) tier backed by SAP HANA Cloud, with automated PDF disruption reporting via jsPDF. This project won SAP HackFest 2026 with Team CodeHens.",
+      "LinqChain (Resilience OS) is an enterprise supply chain command center that deterministically simulates systemic disruptions, predicts multi-tier bottlenecks, and computes optimal recovery paths before catastrophic supply failure occurs. Architecturally, it features a Next.js 14 interactive dashboard utilizing dynamic directed network graphs (@xyflow/react) and Recharts. The computational core runs on Python with FastAPI and SQLAlchemy, hosting a high-throughput deterministic simulation engine. A custom AI Adapter interfaces with enterprise LLMs under deterministic bounds — the LLM can only suggest strategies within pre-calculated feasible simulation states, ensuring hallucination-proof recommendations. Supply telemetry and multi-tier bills of materials are managed on an enterprise SAP Cloud Application Programming Model (CAP) tier backed by SAP HANA Cloud, with automated PDF disruption reporting via jsPDF. This project was a National Finalist at SAP HackFest 2026 with Team CodeHens.",
     project: "resilience",
   },
   {
@@ -191,7 +191,7 @@ const KNOWLEDGE_RESPONSES = [
   {
     keywords: ["hackathon", "hackfest", "sap", "scpc", "awards", "achievements", "winner", "competition"],
     answer:
-      "Competitive hackathons have been pivotal in shaping my speed, grit, and team collaboration. I was a finalist and winner at SAP HackFest 2026 with Team CodeHens for building LinqChain (Resilience OS), and a semifinalist at the SCPC National Hackathon. Hackathons have taught me how to navigate ambiguity, synthesize complex domains into clear system architectures, and ship working prototypes under high pressure.",
+      "Competitive hackathons have been pivotal in shaping my speed, grit, and team collaboration. I was a National Finalist at SAP HackFest 2026 with Team CodeHens for building LinqChain (Resilience OS), and a semifinalist at the SCPC National Hackathon. Hackathons have taught me how to navigate ambiguity, synthesize complex domains into clear system architectures, and ship working prototypes under high pressure.",
     project: null,
   },
   {
@@ -290,7 +290,7 @@ Key facts to draw upon when relevant:
 - Systems & DevOps: Jenkins, Docker, Kubernetes, SonarQube, Maven, AWS (CI/CD pipelines, container orchestration, quality gates).
 - Professional: Frontend Developer Intern at Mittal Alliance (built websites for international clients, 10+ REST APIs), Deccan AI (RLHF & SFT AI model training).
 - Leadership: Google Developer Groups on Campus Lead at Poornima University (scaled community from 1,100 to 2,300+ members, organized 15+ events).
-- Hackathons: Winner at SAP HackFest 2026 (₹75k prize with Team CodeHens for LinqChain/Resilience OS), semifinalist at SCPC National Hackathon, Top 5 at LNMHacks 8.0.
+- Hackathons: National Finalist at SAP HackFest 2026 (₹75k prize with Team CodeHens for LinqChain/Resilience OS), semifinalist at SCPC National Hackathon, Top 5 at LNMHacks 8.0.
 - Key projects: LinqChain (Resilience OS - SAP supply chain control room), OBS (Oracle Before Signing on Monad blockchain), Campus OS (multi-tenant university system), Freight Cost Predictor (Volkswagen logistics ML), Project Pravah (SIH/Oil India telemetry IoT).
 Never break character. Do not use markdown fences, bullets, or asterisks; output conversational plain text that can be spoken directly.`,
           },
@@ -441,10 +441,12 @@ class InterviewSpeechManager {
       );
     };
 
-    // Explicit male detection
+    // Explicit male detection across Windows, Mac, Android, and iOS
     const isMale = (v) => {
       const name = (v.name || "").toLowerCase();
+      const lang = (v.lang || "").toLowerCase();
       return (
+        name.includes("male") ||
         name.includes("prabhat") ||
         name.includes("ravi") ||
         name.includes("mohan") ||
@@ -458,7 +460,11 @@ class InterviewSpeechManager {
         name.includes("george") ||
         name.includes("daniel") ||
         name.includes("oliver") ||
-        name.includes("male")
+        name.includes("alex") ||
+        name.includes("fred") ||
+        name.includes("rishi") ||
+        name.includes("iom") ||
+        name.includes("cfl")
       );
     };
 
@@ -606,9 +612,9 @@ class InterviewSpeechManager {
       if (this.selectedVoice) {
         utterance.voice = this.selectedVoice;
       }
-      utterance.rate = 1.02;
-      // Manly voice with a slightly higher pitch (1.07 instead of deep/bass 0.98)
-      utterance.pitch = 1.07;
+      utterance.rate = 1.0;
+      // Authentic manly voice with grounded baritone cadence (0.88)
+      utterance.pitch = 0.88;
 
       utterance.onstart = () => {
         this.isSpeaking = true;

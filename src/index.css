@@ -705,3 +705,15 @@ img, figure, svg {
   border-radius: 0.5rem 0.5rem 0 0;
   color: #e95420;
 }
+
+
+/* Hide scrollbars on mobile while keeping touch swiping */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
