@@ -8,6 +8,7 @@ import Desktop from "@/components/Desktop";
 import StoryMode from "@/components/StoryMode";
 import RecruiterMode from "@/components/RecruiterMode";
 import BuilderMode from "@/components/BuilderMode";
+import ModernLandingPage from "@/components/ModernLandingPage";
 import Taskbar from "@/components/Taskbar";
 import VoiceLayer from "@/components/VoiceLayer";
 import Terminal from "@/components/Terminal";
@@ -18,16 +19,18 @@ import GuideTourBox from "@/components/GuideTourBox";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { OSSwitchTransition } from "@/components/OSSwitchTransition";
 
-const PHASES = ["desktop", "story", "recruiter", "builder"];
+const PHASES = ["landing", "desktop", "story", "recruiter", "builder", "mobile"];
 const hashToPhase = () => {
   const h = window.location.hash.replace("#", "");
-  return PHASES.includes(h) ? h : "desktop";
+  return PHASES.includes(h) ? h : "landing";
 };
 
 function AppInner() {
-  const [phase, setPhase] = useState(() =>
-    sessionStorage.getItem("yug_booted") ? hashToPhase() : "boot"
-  );
+  const [phase, setPhase] = useState(() => {
+    const h = window.location.hash.replace("#", "");
+    if (PHASES.includes(h)) return h;
+    return "landing";
+  });
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== "undefined") {
       return window.innerWidth < 768;
@@ -105,30 +108,33 @@ function AppInner() {
       <ErrorBoundary>
         <OSSwitchTransition />
 
-        {isMobile && !forceDesktop ? (
+        {/* Mobile View: Desktop OS disabled on mobile (laptop/desktop only) */}
+        {isMobile ? (
           <>
-            <MobileApp
-              onOpenInterview={() => setInterviewOpen(true)}
-              onOpenTerminal={() => setTerminalOpen(true)}
-              onSwitchDesktop={() => {
-                sessionStorage.setItem("yug_booted", "1");
-                setForceDesktop(true);
-              }}
-            />
-            <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} />
-            <InterviewModal open={interviewOpen} onClose={() => setInterviewOpen(false)} />
+            {phase === "landing" ? (
+              <>
+                <ModernLandingPage
+                  goMode={goMode}
+                  openInterview={() => setInterviewOpen(true)}
+                  openTerminal={() => setTerminalOpen(true)}
+                />
+                <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} />
+                <InterviewModal open={interviewOpen} onClose={() => setInterviewOpen(false)} />
+              </>
+            ) : (
+              <>
+                <MobileApp
+                  onReturnLanding={() => goMode("landing")}
+                  onOpenInterview={() => setInterviewOpen(true)}
+                  onOpenTerminal={() => setTerminalOpen(true)}
+                />
+                <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} />
+                <InterviewModal open={interviewOpen} onClose={() => setInterviewOpen(false)} />
+              </>
+            )}
           </>
         ) : (
           <>
-            {isMobile && forceDesktop && (
-              <button
-                onClick={() => setForceDesktop(false)}
-                className="fixed top-2 right-2 z-[999] px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-sans text-xs font-semibold shadow-2xl flex items-center gap-1.5 border border-white/20 cursor-pointer backdrop-blur-md"
-              >
-                <span>📱 Switch to Mobile App</span>
-              </button>
-            )}
-
             {phase === "boot" && (
               <Boot
                 onDone={() => {
@@ -140,6 +146,13 @@ function AppInner() {
 
             {phase !== "boot" && (
               <>
+                {phase === "landing" && (
+                  <ModernLandingPage
+                    goMode={goMode}
+                    openInterview={() => setInterviewOpen(true)}
+                    openTerminal={() => setTerminalOpen(true)}
+                  />
+                )}
                 {phase === "desktop" && (
                   <Desktop
                     goMode={goMode}
@@ -147,33 +160,43 @@ function AppInner() {
                     onAskYug={() => setTerminalOpen(true)}
                     openSettings={() => setSettingsOpen(true)}
                     openInterview={() => setInterviewOpen(true)}
-                    onOpenMobile={() => {
-                      setForceDesktop(false);
-                      setIsMobile(true);
-                    }}
+                    onOpenMobile={() => goMode("mobile")}
                   />
+                )}
+                {phase === "mobile" && (
+                  <div className="min-h-screen bg-[#07080d] flex items-center justify-center p-4">
+                    <div className="w-full max-w-md h-[92vh] max-h-[850px] rounded-3xl overflow-hidden border border-white/20 shadow-2xl relative">
+                      <MobileApp
+                        onReturnLanding={() => goMode("landing")}
+                        onOpenInterview={() => setInterviewOpen(true)}
+                        onOpenTerminal={() => setTerminalOpen(true)}
+                      />
+                    </div>
+                  </div>
                 )}
                 {phase === "story" && <StoryMode onOpenVoice={() => setVoiceOpen(true)} />}
                 {phase === "recruiter" && <RecruiterMode goMode={goMode} goBuilder={goBuilder} />}
                 {phase === "builder" && <BuilderMode goMode={goMode} initialProject={builderProject} />}
 
-                <Taskbar
-                  phase={phase}
-                  goMode={goMode}
-                  openChooser={goMode.bind(null, "desktop")}
-                  restartBoot={restartBoot}
-                  voiceOpen={voiceOpen}
-                  setVoiceOpen={setVoiceOpen}
-                  askYug={() => setTerminalOpen(true)}
-                  openSettings={() => setSettingsOpen(true)}
-                  openInterview={() => setInterviewOpen(true)}
-                  interviewOpen={interviewOpen}
-                />
+                {phase !== "landing" && phase !== "mobile" && (
+                  <Taskbar
+                    phase={phase}
+                    goMode={goMode}
+                    openChooser={goMode.bind(null, "desktop")}
+                    restartBoot={restartBoot}
+                    voiceOpen={voiceOpen}
+                    setVoiceOpen={setVoiceOpen}
+                    askYug={() => setTerminalOpen(true)}
+                    openSettings={() => setSettingsOpen(true)}
+                    openInterview={() => setInterviewOpen(true)}
+                    interviewOpen={interviewOpen}
+                  />
+                )}
                 <VoiceLayer open={voiceOpen} setOpen={setVoiceOpen} />
                 <Terminal open={terminalOpen} onClose={() => setTerminalOpen(false)} />
                 <SettingsWindow open={settingsOpen} onClose={() => setSettingsOpen(false)} />
                 <InterviewModal open={interviewOpen} onClose={() => setInterviewOpen(false)} />
-                <GuideTourBox />
+                {phase !== "landing" && <GuideTourBox />}
               </>
             )}
           </>

@@ -43,6 +43,7 @@ export default function MobileApp({
   onOpenInterview,
   onOpenTerminal,
   onSwitchDesktop,
+  onReturnLanding,
 }) {
   const [activeTab, setActiveTab] = useState("home");
   const [activeCategory, setActiveCategory] = useState("ALL");
@@ -126,23 +127,23 @@ export default function MobileApp({
       </div>
 
       {/* App Header Bar with Share + Desktop Switcher */}
-      <header className="px-3.5 py-2.5 flex items-center justify-between bg-[#0e121c]/95 border-b border-white/10 shrink-0 z-20 backdrop-blur-xl">
-        <div className="flex items-center gap-2.5 min-w-0">
+      <header className="px-3 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between bg-[#0e121c]/95 border-b border-white/10 shrink-0 z-20 backdrop-blur-xl">
+        <div className="flex items-center gap-2 min-w-0">
           <div className="relative shrink-0">
             <img
               src={HEADSHOT}
               alt="Yug Pathak"
-              className="w-10 h-10 rounded-full object-cover border-2 border-emerald-400/80 shadow-md shadow-emerald-950/40"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-emerald-400/80 shadow-md shadow-emerald-950/40"
             />
-            <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#0e121c]" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#0e121c]" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-sm text-white tracking-tight truncate">Yug Pathak</span>
-              <CheckCircle2 size={14} className="text-sky-400 fill-sky-400/20 shrink-0" />
+              <CheckCircle2 size={13} className="text-sky-400 fill-sky-400/20 shrink-0" />
             </div>
-            <p className="text-[11px] text-emerald-400/90 font-mono font-medium leading-none mt-0.5 truncate">
-              SWE & AI Builder · CSE '26
+            <p className="text-[10px] sm:text-[11px] text-emerald-400/90 font-mono font-medium leading-none mt-0.5 truncate">
+              SWE & AI Engineer
             </p>
           </div>
         </div>
@@ -157,12 +158,15 @@ export default function MobileApp({
             {copiedLink ? <Check size={14} className="text-emerald-400" /> : <Share2 size={14} />}
           </button>
           <button
-            onClick={onSwitchDesktop}
-            className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-500/20 to-indigo-500/20 hover:from-sky-500/30 hover:to-indigo-500/30 border border-sky-400/40 text-[11px] font-semibold text-sky-200 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow"
-            title="Switch to Retro Desktop OS"
+            onClick={() => {
+              if (onReturnLanding) onReturnLanding();
+              else window.location.hash = "landing";
+            }}
+            className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-[#ff3b3b]/20 to-[#dc2626]/20 hover:from-[#ff3b3b]/30 hover:to-[#dc2626]/30 border border-[#ff3b3b]/40 text-[11px] font-semibold text-rose-200 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow shrink-0"
+            title="Return to Reel UI Landing"
           >
-            <Monitor size={13} className="text-sky-300" />
-            <span className="hidden xs:inline">Desktop</span>
+            <Sparkles size={12} className="text-[#ff4d5a] shrink-0" />
+            <span>Reel Canvas</span>
           </button>
         </div>
       </header>
@@ -224,13 +228,20 @@ export default function MobileApp({
             <div className="relative rounded-2xl bg-gradient-to-b from-[#151a29]/90 to-[#0e111a]/95 border border-emerald-500/30 p-4 sm:p-5 shadow-2xl overflow-hidden backdrop-blur-xl">
               <div className="absolute top-0 right-0 w-44 h-44 bg-gradient-to-br from-emerald-500/20 to-teal-500/0 rounded-full blur-2xl pointer-events-none" />
 
-              <div className="flex items-start justify-between gap-3">
+              {/* Status Pill on its own top row so it never wraps or feels congested */}
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 whitespace-nowrap">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>OPEN TO SDE ROLES & INTERNSHIPS</span>
+                </span>
+                <span className="text-[10px] font-mono text-emerald-400/70 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 shrink-0">
+                  2026
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between gap-3">
                 <div className="space-y-1 min-w-0">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 border border-emerald-400/30 text-emerald-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    OPEN TO SDE ROLES & INTERNSHIPS
-                  </span>
-                  <h1 className="text-2xl font-black text-white tracking-tight pt-1 truncate">
+                  <h1 className="text-2xl font-black text-white tracking-tight truncate">
                     Yug Pathak
                   </h1>
                   <p className="text-xs text-slate-300 leading-snug">
@@ -367,24 +378,24 @@ export default function MobileApp({
                 ))}
               </div>
 
-              <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+              <div className="flex flex-col xs:flex-row gap-2 pt-2 border-t border-white/10">
                 <a
-                  href="https://resilience-os.vercel.app/command-center"
+                  href="https://linqchain.vercel.app/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow whitespace-nowrap active:scale-95 transition-transform"
                 >
                   <span>Launch Live System</span>
-                  <ArrowUpRight size={14} />
+                  <ArrowUpRight size={14} className="shrink-0" />
                 </a>
                 <button
                   onClick={() => {
                     setActiveTab("projects");
                     setExpandedProject("resilience");
                   }}
-                  className="py-2 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-mono font-medium"
+                  className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-mono font-medium whitespace-nowrap flex items-center justify-center active:scale-95 transition-transform"
                 >
-                  Full Architecture →
+                  <span>Full Architecture →</span>
                 </button>
               </div>
             </div>

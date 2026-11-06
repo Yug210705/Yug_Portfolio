@@ -422,10 +422,10 @@ export const STILL_FIGURING = [
 export const RECRUITER = {
   name: "YUG PATHAK",
   education: "3rd-year B.Tech CSE, Poornima University",
-  role: "Aspiring Software Developer",
+  role: "Software Developer & AI Engineer",
   stats: [
     { k: "8.88", v: "CGPA" },
-    { k: "170+", v: "LEETCODE" },
+    { k: "200+", v: "LEETCODE" },
     { k: "10+", v: "PROD APIS" },
   ],
   highlights: [
@@ -445,7 +445,7 @@ export const PROJECTS = [
     id: "resilience",
     name: "LINQCHAIN · RESILIENCE OS",
     tag: "SUPPLY CHAIN CONTROL ROOM",
-    live: "https://resilience-os.vercel.app/command-center",
+    live: "https://linqchain.vercel.app/",
     problem:
       "Modern global supply networks collapse under cascading tier-N disruptions. LinqChain (Resilience OS) is an enterprise control room that deterministically simulates systemic disruptions, predicts multi-tier bottlenecks, and computes optimal recovery paths before catastrophic supply failure occurs.",
     architecture:
@@ -459,7 +459,7 @@ export const PROJECTS = [
       "Automated PDF report generation so a disruption review outlives the browser session",
     ],
     outcome: [
-      "Live at resilience-os.vercel.app/command-center",
+      "Live at linqchain.vercel.app",
       "National Finalist at SAP HackFest 2026",
       "Deterministic resilience verification across multi-tier supplier networks"
     ],

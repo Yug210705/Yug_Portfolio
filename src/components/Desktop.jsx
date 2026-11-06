@@ -146,9 +146,11 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, o
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0 });
 
   const systemIcons = useMemo(() => {
+    const modernIcon = { icon: "MEET", label: "✨ Reel Landing", onOpen: () => goMode("landing"), testid: "desktop-icon-modern" };
     switch (theme) {
       case "ubuntu":
         return [
+          modernIcon,
           { customIcon: OSComputerIcon, label: "Home (Meet Yug)", onOpen: () => setChooserOpen(true), testid: "desktop-icon-meet-yug" },
           { customIcon: OSInterviewIcon, label: "Live Interview", onOpen: openInterview, testid: "desktop-icon-interview" },
           { customIcon: OSTerminalIcon, label: "Terminal", onOpen: onAskYug, testid: "desktop-icon-ask-yug" },
@@ -163,6 +165,7 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, o
         ];
       case "win11":
         return [
+          modernIcon,
           { customIcon: OSComputerIcon, label: "Meet Yug", onOpen: () => setChooserOpen(true), testid: "desktop-icon-meet-yug" },
           { customIcon: OSInterviewIcon, label: "Interview Yug", onOpen: openInterview, testid: "desktop-icon-interview" },
           { customIcon: OSTerminalIcon, label: "Terminal (Ask Yug)", onOpen: onAskYug, testid: "desktop-icon-ask-yug" },
@@ -174,6 +177,7 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, o
         ];
       case "win10":
         return [
+          modernIcon,
           { customIcon: OSComputerIcon, label: "Meet Yug", onOpen: () => setChooserOpen(true), testid: "desktop-icon-meet-yug" },
           { customIcon: OSInterviewIcon, label: "Live Interview", onOpen: openInterview, testid: "desktop-icon-interview" },
           { customIcon: OSTerminalIcon, label: "Ask Yug Terminal", onOpen: onAskYug, testid: "desktop-icon-ask-yug" },
@@ -186,6 +190,7 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, o
         ];
       case "win8":
         return [
+          modernIcon,
           { customIcon: OSComputerIcon, label: "MEET YUG", onOpen: () => setChooserOpen(true), testid: "desktop-icon-meet-yug" },
           { customIcon: OSInterviewIcon, label: "INTERVIEW YUG", onOpen: openInterview, testid: "desktop-icon-interview" },
           { customIcon: OSTerminalIcon, label: "ASK YUG", onOpen: onAskYug, testid: "desktop-icon-ask-yug" },
@@ -198,6 +203,7 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, o
         ];
       case "win7":
         return [
+          modernIcon,
           { customIcon: OSComputerIcon, label: "Meet Yug", onOpen: () => setChooserOpen(true), testid: "desktop-icon-meet-yug" },
           { customIcon: OSInterviewIcon, label: "Live Interview", onOpen: openInterview, testid: "desktop-icon-interview" },
           { customIcon: OSTerminalIcon, label: "Ask Yug (AI)", onOpen: onAskYug, testid: "desktop-icon-ask-yug" },
@@ -210,6 +216,7 @@ const Desktop = ({ goMode, restartBoot, onAskYug, openSettings, openInterview, o
       case "xp":
       default:
         return [
+          modernIcon,
           { customIcon: OSComputerIcon, label: "MEET_YUG.EXE", onOpen: () => setChooserOpen(true), testid: "desktop-icon-meet-yug" },
           { customIcon: OSInterviewIcon, label: "INTERVIEW_YUG.EXE", onOpen: openInterview, testid: "desktop-icon-interview" },
           { customIcon: OSTerminalIcon, label: "ASK_YUG.EXE", onOpen: onAskYug, testid: "desktop-icon-ask-yug" },

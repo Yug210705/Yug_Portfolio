@@ -89,6 +89,12 @@ const Taskbar = ({
       onClick: openChooser,
     },
     {
+      id: "landing",
+      label: "✨ Modern Reel Site",
+      icon: Sparkles,
+      onClick: () => goMode("landing"),
+    },
+    {
       id: "interview",
       label:
         theme === "ubuntu"
