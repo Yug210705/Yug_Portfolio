@@ -91,9 +91,10 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
   const bgAudioRef = useRef(null);
   const bottomRef = useRef(null);
   const [musicPlaying, setMusicPlaying] = useState(false);
+  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Gracefully stop sound when the website reaches its bottom or when pointer animation ends
+  // Gracefully stop sound when the website reaches its bottom
   const stopSound = useCallback(() => {
     if (!bgAudioRef.current) return;
     const audio = bgAudioRef.current;
@@ -102,17 +103,29 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
     setMusicPlaying(false);
   }, []);
 
-  // Start sound from beginning (used with pointer animation)
+  // Play background song
+  const playSound = useCallback(() => {
+    if (!bgAudioRef.current) return Promise.reject();
+    bgAudioRef.current.volume = 1;
+    const playPromise = bgAudioRef.current.play();
+    if (playPromise !== undefined) {
+      return playPromise.then(() => {
+        setMusicPlaying(true);
+        setAutoplayBlocked(false);
+      });
+    }
+    return Promise.resolve();
+  }, []);
+
+  // Start sound from beginning (used with pointer animation or rebuild canvas)
   const startSound = useCallback(() => {
     if (!bgAudioRef.current) return;
     bgAudioRef.current.currentTime = 0;
-    bgAudioRef.current.volume = 1;
-    bgAudioRef.current.play().then(() => {
-      setMusicPlaying(true);
-    }).catch(() => {
+    playSound().catch(() => {
       // Browser policy blocked unmuted autoplay until user interacts
+      setAutoplayBlocked(true);
     });
-  }, []);
+  }, [playSound]);
 
   // Sound ends as soon as website reaches its bottom (via scroll or IntersectionObserver)
   useEffect(() => {
@@ -343,46 +356,39 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
     startSound();
   }, [startSound]);
 
-  // Stop / Skip to live
+  // Stop / Skip to live (leaves background music playing smoothly)
   const stopTour = useCallback((scrollToTop = false) => {
     setIsTouring(false);
     setIsPaused(false);
     setSelectorBox(null);
     setRevealedItems(new Set(STEPS.map((s) => s.id)));
-    stopSound();
     if (scrollToTop === true) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [STEPS, stopSound]);
+  }, [STEPS]);
 
   // Toggle music button in navbar or floating dock
   const toggleMusic = useCallback(() => {
-    if (!isTouring) {
-      // When website is already built, clicking music restarts pointer animation & song!
-      startTour(1);
+    if (!bgAudioRef.current) return;
+    if (bgAudioRef.current.paused) {
+      playSound().catch(() => {});
     } else {
-      setIsPaused((p) => !p);
+      bgAudioRef.current.pause();
+      setMusicPlaying(false);
     }
-  }, [isTouring, startTour]);
+  }, [playSound]);
 
-  // Song is strictly coupled to pointer animation:
-  // ONLY plays when pointer animation is actively crafting (isTouring && !isPaused).
-  // Stops as soon as pointer animation ends (when website is already built).
+  // Sync HUD pause button with audio during tour
   useEffect(() => {
-    if (isTouring && !isPaused) {
-      if (bgAudioRef.current && bgAudioRef.current.paused) {
-        bgAudioRef.current.volume = 1;
-        bgAudioRef.current.play().then(() => setMusicPlaying(true)).catch(() => {});
-      }
-    } else {
-      if (bgAudioRef.current && !bgAudioRef.current.paused) {
-        bgAudioRef.current.pause();
-        setMusicPlaying(false);
-      }
+    if (isPaused && bgAudioRef.current && !bgAudioRef.current.paused && isTouring) {
+      bgAudioRef.current.pause();
+      setMusicPlaying(false);
+    } else if (!isPaused && bgAudioRef.current && bgAudioRef.current.paused && isTouring) {
+      playSound().catch(() => {});
     }
-  }, [isTouring, isPaused]);
+  }, [isPaused, isTouring, playSound]);
 
-  // Start song and pointer animations on EVERY refresh
+  // Start song and pointer animations on EVERY refresh with rock-solid autoplay fallback
   useEffect(() => {
     try {
       sessionStorage.removeItem("reel_craft_tour_auto");
@@ -392,29 +398,51 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
       startTour(1);
     }, 150);
 
-    const unlockSound = () => {
-      if (bgAudioRef.current && bgAudioRef.current.paused) {
-        bgAudioRef.current.volume = 1;
-        bgAudioRef.current.play().then(() => setMusicPlaying(true)).catch(() => {});
+    // Attempt direct audio playback immediately
+    if (bgAudioRef.current) {
+      bgAudioRef.current.volume = 1;
+      const playPromise = bgAudioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setMusicPlaying(true);
+            setAutoplayBlocked(false);
+          })
+          .catch(() => {
+            // Browser autoplay policy blocked unmuted audio until user interaction
+            setAutoplayBlocked(true);
+          });
       }
-      cleanup();
+    }
+
+    const unlockEvents = ["click", "pointerdown", "touchstart", "touchend", "keydown"];
+
+    const handleUnlockInteraction = () => {
+      if (!bgAudioRef.current) return;
+      bgAudioRef.current.volume = 1;
+      const p = bgAudioRef.current.play();
+      if (p !== undefined) {
+        p.then(() => {
+          setMusicPlaying(true);
+          setAutoplayBlocked(false);
+          cleanup();
+        }).catch(() => {
+          // If still blocked, keep waiting for a valid user gesture
+        });
+      }
     };
 
     const cleanup = () => {
-      window.removeEventListener("pointerdown", unlockSound);
-      window.removeEventListener("pointermove", unlockSound);
-      window.removeEventListener("touchstart", unlockSound);
-      window.removeEventListener("keydown", unlockSound);
-      window.removeEventListener("wheel", unlockSound);
-      window.removeEventListener("scroll", unlockSound);
+      unlockEvents.forEach((evt) => {
+        window.removeEventListener(evt, handleUnlockInteraction, true);
+        document.removeEventListener(evt, handleUnlockInteraction, true);
+      });
     };
 
-    window.addEventListener("pointerdown", unlockSound, { once: true });
-    window.addEventListener("pointermove", unlockSound, { once: true });
-    window.addEventListener("touchstart", unlockSound, { once: true });
-    window.addEventListener("keydown", unlockSound, { once: true });
-    window.addEventListener("wheel", unlockSound, { once: true });
-    window.addEventListener("scroll", unlockSound, { once: true });
+    unlockEvents.forEach((evt) => {
+      window.addEventListener(evt, handleUnlockInteraction, { capture: true, passive: true });
+      document.addEventListener(evt, handleUnlockInteraction, { capture: true, passive: true });
+    });
 
     return () => {
       clearTimeout(t);
@@ -427,12 +455,10 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
     if (!isTouring || isPaused) return;
 
     if (currentStepIndex >= STEPS.length) {
-      // All items fully created by pointers!
-      // Let the song play for an extra 1.8 seconds so user enjoys the climax of the music
+      // All items fully created by pointers! Keep background soundtrack playing smoothly
       const t = setTimeout(() => {
-        stopSound();
-        stopTour(true);
-      }, 1800);
+        stopTour(false);
+      }, 1000);
       return () => clearTimeout(t);
     }
 
@@ -522,7 +548,7 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
 
     const animId = requestAnimationFrame(animateSpan);
     return () => cancelAnimationFrame(animId);
-  }, [isTouring, isPaused, currentStepIndex, tourSpeed, STEPS, playCraftPop, stopTour, stopSound]);
+  }, [isTouring, isPaused, currentStepIndex, tourSpeed, STEPS, playCraftPop, stopTour]);
 
   // Comparison slider manual drag
   const handleSliderMove = (clientX) => {
@@ -674,6 +700,7 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
         src="/assets/strict.mp3"
         loop
         preload="auto"
+        playsInline
         onPlay={() => setMusicPlaying(true)}
         onPause={() => setMusicPlaying(false)}
       />
@@ -880,6 +907,42 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
           )}
         </AnimatePresence>
       </header>
+
+      {/* Autoplay Fallback Prompt: Appears when opened from LinkedIn or browser blocks unmuted audio on load */}
+      <AnimatePresence>
+        {autoplayBlocked && !musicPlaying && (
+          <motion.div
+            initial={{ opacity: 0, y: -16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.95 }}
+            transition={{ duration: 0.25 }}
+            className="fixed top-20 sm:top-22 left-1/2 -translate-x-1/2 z-[90] max-w-[94vw] sm:max-w-md w-auto"
+          >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                playSound().catch(() => {});
+              }}
+              className="group flex items-center gap-2.5 sm:gap-3 px-4 py-2 sm:py-2.5 rounded-full bg-[#111422]/95 backdrop-blur-2xl border border-[#ff3b3b]/60 shadow-[0_8px_30px_rgba(255,59,59,0.35)] text-white hover:border-[#ff3b3b] hover:bg-[#1a1e33] transition-all cursor-pointer active:scale-95"
+            >
+              <span className="relative flex h-3 w-3 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff4d5a] opacity-80" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#ff3b3b]" />
+              </span>
+              <div className="flex flex-col text-left">
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold tracking-wide text-white">
+                  <span>Tap to enable background soundtrack</span>
+                  <Play className="w-3.5 h-3.5 fill-current text-[#ff4d5a] shrink-0 group-hover:scale-110 transition-transform" />
+                </div>
+                <span className="text-[10px] text-slate-400 font-mono">
+                  STRICT · Meechie Alexander (or tap anywhere to play)
+                </span>
+              </div>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ========================================================================= */}
       {/* MAIN HERO SECTION (EACH ELEMENT CREATED VIA SELECTOR BOX)                 */}
