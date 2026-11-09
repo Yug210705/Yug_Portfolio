@@ -343,6 +343,65 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
     return () => clearInterval(interval);
   }, [isTouring, isPaused, tourSpeed]);
 
+  // Smooth scroll back to top reliably across mobile & desktop browsers
+  const smoothScrollToTop = useCallback((onArrived) => {
+    const getScrollTop = () =>
+      window.scrollY ||
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      document.body.scrollTop ||
+      0;
+
+    const startY = getScrollTop();
+
+    if (startY <= 15) {
+      if (onArrived) onArrived();
+      return;
+    }
+
+    const duration = Math.min(1800, Math.max(700, startY * 0.32));
+    const startTime = performance.now();
+    let animFrameId = null;
+    let completed = false;
+
+    // Ease in-out quadratic
+    const easeInOutQuad = (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
+
+    const finish = () => {
+      if (completed) return;
+      completed = true;
+      try {
+        window.scrollTo(0, 0);
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+      } catch (e) {}
+      if (onArrived) onArrived();
+    };
+
+    const step = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const ease = easeInOutQuad(progress);
+      const newY = Math.max(0, Math.round(startY * (1 - ease)));
+
+      try {
+        window.scrollTo(0, newY);
+        if (document.documentElement) document.documentElement.scrollTop = newY;
+        if (document.body) document.body.scrollTop = newY;
+      } catch (e) {}
+
+      if (progress < 1 && getScrollTop() > 5) {
+        animFrameId = requestAnimationFrame(step);
+      } else {
+        finish();
+      }
+    };
+
+    animFrameId = requestAnimationFrame(step);
+    // Safety fallback: if requestAnimationFrame is throttled on mobile background/tab, finish after duration + 100ms
+    setTimeout(finish, duration + 150);
+  }, []);
+
   // Start / restart animated crafting tour (Rebuild canvas or replay)
   const startTour = useCallback((speed = 1) => {
     setTourSpeed(speed);
@@ -351,21 +410,23 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
     setRevealedItems(new Set());
     setIsPaused(false);
     setIsTouring(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    smoothScrollToTop();
     // Sound starts from beginning when clicking Rebuild canvas or Replay
     startSound();
-  }, [startSound]);
+  }, [smoothScrollToTop, startSound]);
 
-  // Stop / Skip to live (leaves background music playing smoothly)
-  const stopTour = useCallback((scrollToTop = false) => {
+  // Stop / Skip to live
+  const stopTour = useCallback((scrollToTop = false, onTopArrived = null) => {
     setIsTouring(false);
     setIsPaused(false);
     setSelectorBox(null);
     setRevealedItems(new Set(STEPS.map((s) => s.id)));
     if (scrollToTop === true) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      smoothScrollToTop(() => {
+        if (onTopArrived) onTopArrived();
+      });
     }
-  }, [STEPS]);
+  }, [STEPS, smoothScrollToTop]);
 
   // Toggle music button in navbar or floating dock
   const toggleMusic = useCallback(() => {
@@ -455,10 +516,14 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
     if (!isTouring || isPaused) return;
 
     if (currentStepIndex >= STEPS.length) {
-      // All items fully created by pointers! Keep background soundtrack playing smoothly
+      // All items fully created by pointers!
+      // After reaching the end of the website, smoothly return to top (on mobile and desktop),
+      // and as soon as it arrives at the top, stop the song!
       const t = setTimeout(() => {
-        stopTour(false);
-      }, 1000);
+        stopTour(true, () => {
+          stopSound();
+        });
+      }, 700);
       return () => clearTimeout(t);
     }
 
@@ -548,7 +613,7 @@ export default function ModernLandingPage({ goMode, openInterview, openTerminal 
 
     const animId = requestAnimationFrame(animateSpan);
     return () => cancelAnimationFrame(animId);
-  }, [isTouring, isPaused, currentStepIndex, tourSpeed, STEPS, playCraftPop, stopTour]);
+  }, [isTouring, isPaused, currentStepIndex, tourSpeed, STEPS, playCraftPop, stopTour, stopSound]);
 
   // Comparison slider manual drag
   const handleSliderMove = (clientX) => {
